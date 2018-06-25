@@ -79,15 +79,17 @@ class StudiengangsleiterView extends moodleform {
         $mform->closeHeaderBefore('antragsbearbeitung');
         
         // radio buttons for inhalte des a.bildungplanes
-        $mform->addElement('radio', 'aufnahme', '', get_string('aufnahme1', 'mod_apsechs'), 0);
+        $mform->addGroup([$mform->createElement('radio', 'aufnahme', '', get_string('aufnahme1', 'mod_apsechs'), 0)],
+                        'aufnahmeG1', '', array(' '), false);
+        
         // fehlt noch: date selector:
         $inhaltOption2=array();
         $inhaltOption2[] = $mform->createElement('radio', 'aufnahme', '', get_string('aufnahme2', 'mod_apsechs'), 1);
         $inhaltOption2[] = $mform->createElement('date_selector', 'inhaltOpt2DS', '');
-        $mform->addGroup($inhaltOption2, 'aufnahmeRadio', get_string('aufnahmeText', 'mod_apsechs'), array(' '), false);
+        $mform->addGroup($inhaltOption2, 'aufnahmeG2', get_string('aufnahmeText', 'mod_apsechs'), array(' '), false);
         
-        $mform->addElement('radio', 'aufnahme', '', get_string('aufnahme3', 'mod_apsechs'), 2);
-        
+        $mform->addGroup([$mform->createElement('radio', 'aufnahme', '', get_string('aufnahme3', 'mod_apsechs'), 0)],
+                         'aufnahmeG3', '', array(' '), false);
         
         $mform->addElement('select', 'zulassung', get_string('zulassungStudiengang', 'mod_apsechs'),
                            ["nicht zutreffend"],

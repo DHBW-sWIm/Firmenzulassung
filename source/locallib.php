@@ -96,7 +96,7 @@ function apsechs_get_process_definition_id($processKey) {
 	$resource_name_like = null; // string | Only return process definitions with a name like the given resource name.
 	$category = null; // string | Only return process definitions with the given category.
 	$category_like = null; // string | Only return process definitions with a category like the given name.
-	$category_not_equals = null; // string | Only return process definitions which don�t have the given category.
+	$category_not_equals = null; // string | Only return process definitions which donï¿½t have the given category.
 	$deployment_id = null; // string | Only return process definitions with the given category.
 	$startable_by_user = null; // string | Only return process definitions which are part of a deployment with the given id.
 	$latest = "true"; // bool | Only return the latest process definition versions. Can only be used together with key and keyLike parameters, using any other parameter will result in a 400-response.

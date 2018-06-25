@@ -74,7 +74,7 @@ $string['stadt'] = 'Stadt';
 $string['postleitzahl'] = 'Postleitzahl';
 $string['anzahlMitarbeiter'] = 'Anzahl der Mitarbeiter';
 $string['anzahlKaufmAusb'] = 'Anzahl der kaufm. Ausbildenden';
-$string['strasse'] = 'Straße';
+$string['strasse'] = 'StraÃŸe';
 $string['nummer'] = 'Nummer';
 $string['anzahlTechnischenAusb'] = 'Anzahl der technischen Auszubildenden';
 $string['anzahlSonstigerAusb'] = 'Anzahl der sonstiger Auszubildenden';
@@ -83,22 +83,22 @@ $string['anzahlSonstigerAusb'] = 'Anzahl der sonstiger Auszubildenden';
  * Form 3. Angaben zur Ausbildung
  */
 $string['subtitle3'] = '3. Angaben zur Ausbildung';
-$string['verguetung'] = 'Höhe der Ausbildungsvergütung';
+$string['verguetung'] = 'HÃ¶he der AusbildungsvergÃ¼tung';
 
 $string['ausbildungsplanInhalte'] = 'Die Inhalte des Ausbildungsplanes werden...';
 $string['internVollVermittelt'] = 'intern voll vermittelt.';
 $string['internTeilVermittelt'] = 'intern nur teilweise vermittelt.';
 
-$string['ausbildungsplanStud'] = 'Ausbildungsplan für Studierende:';
+$string['ausbildungsplanStud'] = 'Ausbildungsplan fÃ¼r Studierende:';
 
 /**
  * Form 4. Antrasbearbeitung
  */
 $string['subtitle4'] = '4. Antrasbearbeitung';
-$string['aufnahmeText'] = 'Wir bitten um Aufnahme in die Firmenliste für Studienbewerber:';
+$string['aufnahmeText'] = 'Wir bitten um Aufnahme in die Firmenliste fÃ¼r Studienbewerber:';
 $string['aufnahme1'] = 'sofort nach Zulassung.';
 $string['aufnahme2'] = 'ab dem';
-$string['aufnahme3'] = 'überhaupt nicht.';
+$string['aufnahme3'] = 'Ã¼berhaupt nicht.';
 
 $string['zulassungStudiengang'] = 'Eine Zulassung liegt bereits den Studiengang:';
 $string['zulassungOpt1'] = 'nicht zutreffend';

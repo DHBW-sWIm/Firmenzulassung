@@ -26,13 +26,13 @@ class DbConnectivity {
                 "postleitzahl" => 28195,
                 "anzahlMitarbeiter" => 235,
                 "anzahlKaufmAusbildenden" => 1,
-                "strasse" => "SchnippSchnappStraße",
+                "strasse" => "SchnippSchnappStraÃŸe",
                 "nummer" => "24-27",
                 "anzahlTechnischenAusbildenden" => 2,
                 "anzahlSonstigerAusbildenden" => 0
             ],
             "ausbildung" => [
-                "verguetung" => "900 €",
+                "verguetung" => "900 â‚¬",
                 "inhalteDesAusbildungsplanes" => 0
             ],
         ];
