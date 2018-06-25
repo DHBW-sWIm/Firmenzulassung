@@ -93,11 +93,11 @@ $mform = new StudiengangsleiterView();
 if ($mform->is_cancelled()) {
     //Handle form cancel operation, if cancel button is present on form
 } else if ($fromform = $mform->get_data()) {
-    $value1 = $fromform->email;
-    $value2 = $fromform->name;
+    //$value1 = $fromform->email;
+    //$value2 = $fromform->name;
 
-    echo $value1;
-    error_log($value1);
+    //echo $value1;
+    //error_log($value1);
 
   //In this case you process validated data. $mform->get_data() returns data posted in form.
   //Creating instance of relevant API modules
