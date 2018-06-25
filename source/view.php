@@ -78,12 +78,13 @@ if ($apsechs->intro) {
 }
 
 // Replace the following lines with you own code.
-echo $OUTPUT->heading('Antrag auf Zulassung');
+echo $OUTPUT->heading(get_string('title', 'mod_apsechs'));
 
 // Implement form for user
-require_once(dirname(__FILE__).'/forms/antrag_auf_zulassung.php');
+// TODO: connect with activity, and decide which form should be shown
+require_once(dirname(__FILE__).'/forms/antragsUebersicht/StudiengangsleiterView.php');
 
-$mform = new simplehtml_form();
+$mform = new StudiengangsleiterView();
 // $mform->render();
 
 // error_log("TEST FROM BEFORE DISPLAY");

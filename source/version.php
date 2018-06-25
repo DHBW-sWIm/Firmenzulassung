@@ -28,7 +28,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_apsechs';
-$plugin->version = 20180622107;
+$plugin->version = 201806251428;
 $plugin->release = 'v0.0';
 $plugin->requires = 2014051200;
 $plugin->maturity = MATURITY_ALPHA;
