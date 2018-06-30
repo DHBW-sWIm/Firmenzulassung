@@ -8,7 +8,7 @@
  *
  */
 class DbConnectivity {
-    function getMetaData() {
+    function getMetaData($anfrage_id) {
         return [
             "angesteller" => [
                 "vorname" => "Anke",
@@ -38,8 +38,31 @@ class DbConnectivity {
         ];
     }
     
+    function changeStatus($newStatus) {
+        /** $newStatus comes in the following structure:
+         *  [
+         *      "genehmigt" =>  1, // 1 = approved, 0 = declined.
+         *      "generell" => [
+         *          "verantwortlicher" => 5468464, // ID of the Studiengangsleiter
+         *          "studiengang" => 54 // ID of the Studiengang
+         *      ],
+         *      "antragsbearbeitung" => [
+         *          "aufnahme" => [
+         *              "aufnahme" => 1,
+         *              "datum" => "29.09.2018"
+         *          ],
+         *          "zulassung" => 0,
+         *      ],
+         *      "zulassungprozess" => [
+         *          "besichtigung" => "20.09.2017" (or null if it hasn't happened)
+         *      ]
+         *  ]
+         **/ 
+        // TODO: save changes in the backend.
+    }
+    
     // If set, then returns the responsible person's ID, otherwise null
-    function getCurrentResponsible() {
+    function getCurrentResponsible($anfrage_id) {
         // TOOD: replace dummy data
         return 1;
     }
@@ -51,38 +74,20 @@ class DbConnectivity {
         ];
     }
     
-    /**
-     * Return 1-4, depending on who's responsibility it is:
-     *      1: Studiengangsleiter
-     *      2: Dekan
-     *      3: Rektorat
-     *      4: Abschluss
-     */
-    function getCurrentStepInApproval() {
-        return 2;
-    }
-    
-    function getPlanInhalteSelectables() {
-        return [
-            "id" => [0, 1],
-            "text" => ["intern voll vermittlet.", "intern nur teilweise vermittelt."]
-        ];
-    }
-    
-    function getSelectedPlanInhalte() {
+    function getSelectedPlanInhalte($anfrage_id) {
         return 1;
     }
     
-    function getCurrentStudiengang() {
+    function getCurrentStudiengang($anfrage_id) {
         return -1;
     }
     
-    /* Returns a list of:
-     - IDs
-     - Names
-     for possible responsibles for the specific request.
+    /** Returns a list of:
+     * - IDs
+     * - Names
+     * for possible responsibles for the specific request.
      */
-    function getResponsibles() {
+    function getResponsibles($anfrage_id) {
         //TODO: replace dummy data
         $resp = [
             "user_id" => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -95,12 +100,12 @@ class DbConnectivity {
         return $resp;
     }
     
-    function getRequestDate() {
+    function getRequestDate($anfrage_id) {
         return "15.08.2018";
     }
     
-    function getCurrentStatus() {
+    function getCurrentStatus($anfrage_id) {
         //TODO: replace dummy data
-        return "neu";
+        return 0;
     }
 }

@@ -52,6 +52,11 @@ $string['status'] = 'Status';
 $string['antragsdatum'] = 'Antragsdatum';
 $string['studiengang'] = 'Studiengang';
 
+$string['status0'] = 'neu';
+$string['status1'] = 'genehmigt durch Studiengangsleiter';
+$string['status2'] = 'genehmigt durch Dekan';
+$string['status3'] = 'genehmigt durch Rektorat';
+
 /**
  * Form 1. Angaben zum Angesteller als Unternehmen
  */
@@ -113,10 +118,10 @@ $string['zulassungOpt5'] = '5';
  */
 $string['subtitleFinal'] = 'Zulassungsprozess';
 
-$string['zulassung1'] = 'Studiengangsleiter';
-$string['zulassung2'] = 'Dekan';
-$string['zulassung3'] = 'Rektorat';
-$string['zulassung4'] = 'Abschluss';
+$string['zulassung0'] = 'Studiengangsleiter';
+$string['zulassung1'] = 'Dekan';
+$string['zulassung2'] = 'Rektorat';
+$string['zulassung3'] = 'Abschluss';
 
 $string['besichtigt'] = 'Das Unternehmen wurde von verantwortliche Studiengangsleiter besichtigt.';
 $string['datumUNBes'] = 'Datum der Unternehmenbesichtigung';

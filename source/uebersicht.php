@@ -58,7 +58,7 @@ $event->trigger();
 
 // Print the page header.
 
-$PAGE->set_url('/mod/apsechs/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/apsechs/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $_GET['anfrageid']));
 $PAGE->set_title(format_string($apsechs->name));
 $PAGE->set_heading(format_string($course->fullname));
 
@@ -82,20 +82,64 @@ echo $OUTPUT->heading(get_string('title', 'mod_apsechs'));
 
 // Implement form for user
 // TODO: connect with activity, and decide which form should be shown
-//require_once(dirname(__FILE__).'/forms/antragsUebersicht/Uebersicht.php');
+require_once(dirname(__FILE__).'/forms/antragsUebersicht/Uebersicht.php');
+$mform = new Uebersicht();
 
-// $mform = new Uebersicht();
+require_once(dirname(__FILE__).'/backend/DbConnectivity.php');
+$dbConnectivity = new DbConnectivity();
 
-$id = $_GET['id'];
-echo '<a href="uebersicht.php?id='. $id . '&anfrageid=1">Test link to the overview page</a>';
 // $mform->render();
 
 // error_log("TEST FROM BEFORE DISPLAY");
-/*
+
 //Form processing and displaying is done here
-if ($mform->is_cancelled()) {
-    //Handle form cancel operation, if cancel button is present on form
-} else if ($fromform = $mform->get_data()) {
+if ($fromform = $mform->get_data()) {
+    
+    if (!empty($fromform->genehmigen)) {
+        $genehmigt = 1;
+    } elseif (!empty($fromform->ablehen)) {
+        $genehmigt = 0;
+    }
+    
+    if (isset($genehmigt)) {
+        if ($fromform->aufnahme == 1) {
+            $aufnahme = [
+                "aufnahme" => $fromform->aufnahme,
+                "datum" => $fromform->inhaltOpt2DS
+            ];
+        } else {
+            $aufnahme = [
+                "aufnahme" => $fromform->aufnahme,
+                "datum" => NULL
+            ];
+        }
+        
+        if (isset($fromform->besichtigt)) {
+            $besichtigung = $fromform->datumUNehmenBes;
+        } else {
+            $besichtigung = NULL;
+        }
+        
+        $dbConnectivity->changeStatus([
+            "genehmigt" => $genehmigt,
+            "generell" => [
+                "verantwortlicher" => $fromform->responsible,
+                "studiengang" => $fromform->studiengang
+            ],
+            "antragsbearbeitung" => [
+                "aufnahme" => $aufnahme
+            ],
+            "zulassungprozess" => [
+                "besichtigung" => $besichtigung
+            ]
+        ]);
+        
+        $PAGE->set_url('/mod/apsechs/view.php', array('id' => $cm->id));
+    } else {
+        $PAGE->set_url('/mod/apsechs/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $_GET['anfrageid']));
+    }
+    
+    
     //$value1 = $fromform->email;
     //$value2 = $fromform->name;
 
@@ -104,7 +148,7 @@ if ($mform->is_cancelled()) {
 
   //In this case you process validated data. $mform->get_data() returns data posted in form.
   //Creating instance of relevant API modules
-  create_api_instances();
+ /* create_api_instances();
   $process_definition_id = apsechs_get_process_definition_id("testttest");
   error_log("PROCESS DEFINITION ID IS: " . $process_definition_id);
   $process_instance_id = apsechs_start_process($process_definition_id, "test_key");
@@ -119,20 +163,20 @@ if ($mform->is_cancelled()) {
     $value2 = $fromform->name;
     $result = apsechs_answer_input_required($taskid, $process_definition_id, $value1, $value2);
     error_log("INPUT SEND RESULT IS: " . $result);
-  }
+  }*/
 } else {
   // this branch is executed if the form is submitted but the data doesn't validate and the form should be redisplayed
   // or on the first display of the form.
  
   // Set default data (if any)
   // Required for module not to crash as a course id is always needed
-  $formdata = array('id' => $id);
+  $formdata = array('id' => $id, 'anfrageid' => $_GET['anfrageid']);
   $mform->set_data($formdata);
   //displays the form
   $mform->display();
 
   error_log("TEST FROM AFTER DISPLAY");
 }
-*/
+
 // Finish the page.
 echo $OUTPUT->footer();
