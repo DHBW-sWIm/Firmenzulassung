@@ -5,7 +5,6 @@
  * the necessary data from the database tables.
  * The class also provides both read, write and delete possibilities.
  * @author Nandor Babina
- *
  */
 class DbConnectivity {
     function getMetaData($anfrage_id) {
