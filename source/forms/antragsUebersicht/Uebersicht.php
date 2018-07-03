@@ -21,10 +21,10 @@ class Uebersicht extends moodleform {
             $dbConnectivity->getResponsibles($anfrage_id)['name'],
             $dbConnectivity->getResponsibles($anfrage_id)['user_id']);
         
-        $mform->setDefault('responsible', $dbConnectivity->getCurrentResponsible($anfrage_id));
-        $mform->addGroup([$mform->createElement('html', '<text style="color: rgb(250, 70, 50); font-weight:  bold;">' . get_string('status' . $dbConnectivity->getCurrentStatus($anfrage_id), 'mod_firmenzulassung') . '</text>')],
+        $mform->setDefault('responsible', $dbConnectivity->getMetaData($anfrage_id)["general"]["responsible"]);
+        $mform->addGroup([$mform->createElement('html', '<text style="color: rgb(250, 70, 50); font-weight:  bold;">' . get_string('status' . $dbConnectivity->getMetaData($anfrage_id)["general"]["currentStatus"], 'mod_firmenzulassung') . '</text>')],
                          'status', get_string('status', 'mod_firmenzulassung'), array(' '), false);
-        $mform->addElement('static', 'requestDate', get_string('antragsdatum', 'mod_firmenzulassung'), $dbConnectivity->getRequestDate($anfrage_id));
+        $mform->addElement('static', 'requestDate', get_string('antragsdatum', 'mod_firmenzulassung'), $dbConnectivity->getMetaData($anfrage_id)["general"]["requestDate"]);
         $mform->addElement('select', 'studiengang', get_string('studiengang', 'mod_firmenzulassung'),
                           $dbConnectivity->getStudiengangs()['name'],
                           $dbConnectivity->getStudiengangs()['id']);
@@ -126,7 +126,7 @@ class Uebersicht extends moodleform {
         $mform->addElement('header', 'zulassungsprozess', get_string('subtitleFinal', 'mod_firmenzulassung'));
         $mform->closeHeaderBefore('zulassungsprozess');
         
-        $currentStep = $dbConnectivity->getCurrentStatus($anfrage_id);
+        $currentStep = $dbConnectivity->getMetaData($anfrage_id)["general"]["currentStatus"];
         
         $part1 = '';
         $part2 = '';

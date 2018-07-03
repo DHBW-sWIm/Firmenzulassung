@@ -9,10 +9,17 @@
 class DbConnectivity {
     function getMetaData($anfrage_id) {
         return [
+            "general" => [
+                "requestDate" => "15.08.2018",
+                "currentStatus" => 0,
+                "studiengang" => -1,
+                "responsible" => 1
+                
+            ],
             "angesteller" => [
                 "vorname" => "Anke",
                 "nachname" => "Berndt",
-                "email" => "anke.berndt.schnippschnapp.de",
+                "email" => "anke.berndt@schnippschnapp.de",
                 "tel" => "0123 567890",
                 "fax" => "0123 456789"
             ],
@@ -60,25 +67,11 @@ class DbConnectivity {
         // TODO: save changes in the backend.
     }
     
-    // If set, then returns the responsible person's ID, otherwise null
-    function getCurrentResponsible($anfrage_id) {
-        // TOOD: replace dummy data
-        return 1;
-    }
-    
     function getStudiengangs() {
         return [
             "id" => [1, 2, 3],
             "name" => ["Wirtschaftsinformatik", "Digital Media", "Informatik"]
         ];
-    }
-    
-    function getSelectedPlanInhalte($anfrage_id) {
-        return 1;
-    }
-    
-    function getCurrentStudiengang($anfrage_id) {
-        return -1;
     }
     
     /** Returns a list of:
@@ -99,12 +92,4 @@ class DbConnectivity {
         return $resp;
     }
     
-    function getRequestDate($anfrage_id) {
-        return "15.08.2018";
-    }
-    
-    function getCurrentStatus($anfrage_id) {
-        //TODO: replace dummy data
-        return 0;
-    }
 }
