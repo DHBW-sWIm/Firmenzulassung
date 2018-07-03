@@ -15,16 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Library of interface functions and constants for module apsechs
+ * Library of interface functions and constants for module firmenzulassung
  *
  * All the core Moodle functions, neeeded to allow the module to work
  * integrated in Moodle should be placed here.
  *
- * All the apsechs specific functions, needed to implement all the module
+ * All the firmenzulassung specific functions, needed to implement all the module
  * logic, should go to locallib.php. This will help to save some memory when
  * Moodle is performing actions across all modules.
  *
- * @package    mod_apsechs
+ * @package    mod_firmenzulassung
  * @copyright  2016 Your Name <your@email.address>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -34,7 +34,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Example constant, you probably want to remove this :-)
  */
-define('APSECHS_ULTIMATE_ANSWER', 42);
+define('FIRMENZULASSUNG_ULTIMATE_ANSWER', 42);
 
 /* Moodle core API */
 
@@ -46,7 +46,7 @@ define('APSECHS_ULTIMATE_ANSWER', 42);
  * @param string $feature FEATURE_xx constant for requested feature
  * @return mixed true if the feature is supported, null if unknown
  */
-function apsechs_supports($feature) {
+function firmenzulassung_supports($feature) {
 
     switch($feature) {
         case FEATURE_MOD_INTRO:
@@ -63,53 +63,53 @@ function apsechs_supports($feature) {
 }
 
 /**
- * Saves a new instance of the apsechs into the database
+ * Saves a new instance of the firmenzulassung into the database
  *
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
  * will create a new instance and return the id number
  * of the new instance.
  *
- * @param stdClass $apsechs Submitted data from the form in mod_form.php
- * @param mod_apsechs_mod_form $mform The form instance itself (if needed)
- * @return int The id of the newly inserted apsechs record
+ * @param stdClass $firmenzulassung Submitted data from the form in mod_form.php
+ * @param mod_firmenzulassung_mod_form $mform The form instance itself (if needed)
+ * @return int The id of the newly inserted firmenzulassung record
  */
-function apsechs_add_instance(stdClass $apsechs, mod_apsechs_mod_form $mform = null) {
+function firmenzulassung_add_instance(stdClass $firmenzulassung, mod_firmenzulassung_mod_form $mform = null) {
     global $DB;
 
-    $apsechs->timecreated = time();
+    $firmenzulassung->timecreated = time();
 
     // You may have to add extra stuff in here.
 
-    $apsechs->id = $DB->insert_record('apsechs', $apsechs);
+    $firmenzulassung->id = $DB->insert_record('firmenzulassung', $firmenzulassung);
 
-    apsechs_grade_item_update($apsechs);
+    firmenzulassung_grade_item_update($firmenzulassung);
 
-    return $apsechs->id;
+    return $firmenzulassung->id;
 }
 
 /**
- * Updates an instance of the apsechs in the database
+ * Updates an instance of the firmenzulassung in the database
  *
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
  * will update an existing instance with new data.
  *
- * @param stdClass $apsechs An object from the form in mod_form.php
- * @param mod_apsechs_mod_form $mform The form instance itself (if needed)
+ * @param stdClass $firmenzulassung An object from the form in mod_form.php
+ * @param mod_firmenzulassung_mod_form $mform The form instance itself (if needed)
  * @return boolean Success/Fail
  */
-function apsechs_update_instance(stdClass $apsechs, mod_apsechs_mod_form $mform = null) {
+function firmenzulassung_update_instance(stdClass $firmenzulassung, mod_firmenzulassung_mod_form $mform = null) {
     global $DB;
 
-    $apsechs->timemodified = time();
-    $apsechs->id = $apsechs->instance;
+    $firmenzulassung->timemodified = time();
+    $firmenzulassung->id = $firmenzulassung->instance;
 
     // You may have to add extra stuff in here.
 
-    $result = $DB->update_record('apsechs', $apsechs);
+    $result = $DB->update_record('firmenzulassung', $firmenzulassung);
 
-    apsechs_grade_item_update($apsechs);
+    firmenzulassung_grade_item_update($firmenzulassung);
 
     return $result;
 }
@@ -117,36 +117,36 @@ function apsechs_update_instance(stdClass $apsechs, mod_apsechs_mod_form $mform 
 /**
  * This standard function will check all instances of this module
  * and make sure there are up-to-date events created for each of them.
- * If courseid = 0, then every apsechs event in the site is checked, else
- * only apsechs events belonging to the course specified are checked.
+ * If courseid = 0, then every firmenzulassung event in the site is checked, else
+ * only firmenzulassung events belonging to the course specified are checked.
  * This is only required if the module is generating calendar events.
  *
  * @param int $courseid Course ID
  * @return bool
  */
-function apsechs_refresh_events($courseid = 0) {
+function firmenzulassung_refresh_events($courseid = 0) {
     global $DB;
 
     if ($courseid == 0) {
-        if (!$apsechss = $DB->get_records('apsechs')) {
+        if (!$firmenzulassungs = $DB->get_records('firmenzulassung')) {
             return true;
         }
     } else {
-        if (!$apsechss = $DB->get_records('apsechs', array('course' => $courseid))) {
+        if (!$firmenzulassungs = $DB->get_records('firmenzulassung', array('course' => $courseid))) {
             return true;
         }
     }
 
-    foreach ($apsechss as $apsechs) {
+    foreach ($firmenzulassungs as $firmenzulassung) {
         // Create a function such as the one below to deal with updating calendar events.
-        // apsechs_update_events($apsechs);
+        // firmenzulassung_update_events($firmenzulassung);
     }
 
     return true;
 }
 
 /**
- * Removes an instance of the apsechs from the database
+ * Removes an instance of the firmenzulassung from the database
  *
  * Given an ID of an instance of this module,
  * this function will permanently delete the instance
@@ -155,18 +155,18 @@ function apsechs_refresh_events($courseid = 0) {
  * @param int $id Id of the module instance
  * @return boolean Success/Failure
  */
-function apsechs_delete_instance($id) {
+function firmenzulassung_delete_instance($id) {
     global $DB;
 
-    if (! $apsechs = $DB->get_record('apsechs', array('id' => $id))) {
+    if (! $firmenzulassung = $DB->get_record('firmenzulassung', array('id' => $id))) {
         return false;
     }
 
     // Delete any dependent records here.
 
-    $DB->delete_records('apsechs', array('id' => $apsechs->id));
+    $DB->delete_records('firmenzulassung', array('id' => $firmenzulassung->id));
 
-    apsechs_grade_item_delete($apsechs);
+    firmenzulassung_grade_item_delete($firmenzulassung);
 
     return true;
 }
@@ -182,10 +182,10 @@ function apsechs_delete_instance($id) {
  * @param stdClass $course The course record
  * @param stdClass $user The user record
  * @param cm_info|stdClass $mod The course module info object or record
- * @param stdClass $apsechs The apsechs instance record
+ * @param stdClass $firmenzulassung The firmenzulassung instance record
  * @return stdClass|null
  */
-function apsechs_user_outline($course, $user, $mod, $apsechs) {
+function firmenzulassung_user_outline($course, $user, $mod, $firmenzulassung) {
 
     $return = new stdClass();
     $return->time = 0;
@@ -202,21 +202,21 @@ function apsechs_user_outline($course, $user, $mod, $apsechs) {
  * @param stdClass $course the current course record
  * @param stdClass $user the record of the user we are generating report for
  * @param cm_info $mod course module info
- * @param stdClass $apsechs the module instance record
+ * @param stdClass $firmenzulassung the module instance record
  */
-function apsechs_user_complete($course, $user, $mod, $apsechs) {
+function firmenzulassung_user_complete($course, $user, $mod, $firmenzulassung) {
 }
 
 /**
  * Given a course and a time, this module should find recent activity
- * that has occurred in apsechs activities and print it out.
+ * that has occurred in firmenzulassung activities and print it out.
  *
  * @param stdClass $course The course record
  * @param bool $viewfullnames Should we display full names
  * @param int $timestart Print activity since this timestamp
  * @return boolean True if anything was printed, otherwise false
  */
-function apsechs_print_recent_activity($course, $viewfullnames, $timestart) {
+function firmenzulassung_print_recent_activity($course, $viewfullnames, $timestart) {
     return false;
 }
 
@@ -225,7 +225,7 @@ function apsechs_print_recent_activity($course, $viewfullnames, $timestart) {
  *
  * This callback function is supposed to populate the passed array with
  * custom activity records. These records are then rendered into HTML via
- * {@link apsechs_print_recent_mod_activity()}.
+ * {@link firmenzulassung_print_recent_mod_activity()}.
  *
  * Returns void, it adds items into $activities and increases $index.
  *
@@ -237,11 +237,11 @@ function apsechs_print_recent_activity($course, $viewfullnames, $timestart) {
  * @param int $userid check for a particular user's activity only, defaults to 0 (all users)
  * @param int $groupid check for a particular group's activity only, defaults to 0 (all groups)
  */
-function apsechs_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid=0, $groupid=0) {
+function firmenzulassung_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid=0, $groupid=0) {
 }
 
 /**
- * Prints single activity item prepared by {@link apsechs_get_recent_mod_activity()}
+ * Prints single activity item prepared by {@link firmenzulassung_get_recent_mod_activity()}
  *
  * @param stdClass $activity activity record with added 'cmid' property
  * @param int $courseid the id of the course we produce the report for
@@ -249,7 +249,7 @@ function apsechs_get_recent_mod_activity(&$activities, &$index, $timestart, $cou
  * @param array $modnames as returned by {@link get_module_types_names()}
  * @param bool $viewfullnames display users' full names
  */
-function apsechs_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
+function firmenzulassung_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
 }
 
 /**
@@ -262,7 +262,7 @@ function apsechs_print_recent_mod_activity($activity, $courseid, $detail, $modna
  *
  * @return boolean
  */
-function apsechs_cron () {
+function firmenzulassung_cron () {
     return true;
 }
 
@@ -274,26 +274,26 @@ function apsechs_cron () {
  *
  * @return array
  */
-function apsechs_get_extra_capabilities() {
+function firmenzulassung_get_extra_capabilities() {
     return array();
 }
 
 /* Gradebook API */
 
 /**
- * Is a given scale used by the instance of apsechs?
+ * Is a given scale used by the instance of firmenzulassung?
  *
- * This function returns if a scale is being used by one apsechs
+ * This function returns if a scale is being used by one firmenzulassung
  * if it has support for grading and scales.
  *
- * @param int $apsechsid ID of an instance of this module
+ * @param int $firmenzulassungid ID of an instance of this module
  * @param int $scaleid ID of the scale
- * @return bool true if the scale is used by the given apsechs instance
+ * @return bool true if the scale is used by the given firmenzulassung instance
  */
-function apsechs_scale_used($apsechsid, $scaleid) {
+function firmenzulassung_scale_used($firmenzulassungid, $scaleid) {
     global $DB;
 
-    if ($scaleid and $DB->record_exists('apsechs', array('id' => $apsechsid, 'grade' => -$scaleid))) {
+    if ($scaleid and $DB->record_exists('firmenzulassung', array('id' => $firmenzulassungid, 'grade' => -$scaleid))) {
         return true;
     } else {
         return false;
@@ -301,17 +301,17 @@ function apsechs_scale_used($apsechsid, $scaleid) {
 }
 
 /**
- * Checks if scale is being used by any instance of apsechs.
+ * Checks if scale is being used by any instance of firmenzulassung.
  *
  * This is used to find out if scale used anywhere.
  *
  * @param int $scaleid ID of the scale
- * @return boolean true if the scale is used by any apsechs instance
+ * @return boolean true if the scale is used by any firmenzulassung instance
  */
-function apsechs_scale_used_anywhere($scaleid) {
+function firmenzulassung_scale_used_anywhere($scaleid) {
     global $DB;
 
-    if ($scaleid and $DB->record_exists('apsechs', array('grade' => -$scaleid))) {
+    if ($scaleid and $DB->record_exists('firmenzulassung', array('grade' => -$scaleid))) {
         return true;
     } else {
         return false;
@@ -319,29 +319,29 @@ function apsechs_scale_used_anywhere($scaleid) {
 }
 
 /**
- * Creates or updates grade item for the given apsechs instance
+ * Creates or updates grade item for the given firmenzulassung instance
  *
  * Needed by {@link grade_update_mod_grades()}.
  *
- * @param stdClass $apsechs instance object with extra cmidnumber and modname property
+ * @param stdClass $firmenzulassung instance object with extra cmidnumber and modname property
  * @param bool $reset reset grades in the gradebook
  * @return void
  */
-function apsechs_grade_item_update(stdClass $apsechs, $reset=false) {
+function firmenzulassung_grade_item_update(stdClass $firmenzulassung, $reset=false) {
     global $CFG;
     require_once($CFG->libdir.'/gradelib.php');
 
     $item = array();
-    $item['itemname'] = clean_param($apsechs->name, PARAM_NOTAGS);
+    $item['itemname'] = clean_param($firmenzulassung->name, PARAM_NOTAGS);
     $item['gradetype'] = GRADE_TYPE_VALUE;
 
-    if ($apsechs->grade > 0) {
+    if ($firmenzulassung->grade > 0) {
         $item['gradetype'] = GRADE_TYPE_VALUE;
-        $item['grademax']  = $apsechs->grade;
+        $item['grademax']  = $firmenzulassung->grade;
         $item['grademin']  = 0;
-    } else if ($apsechs->grade < 0) {
+    } else if ($firmenzulassung->grade < 0) {
         $item['gradetype'] = GRADE_TYPE_SCALE;
-        $item['scaleid']   = -$apsechs->grade;
+        $item['scaleid']   = -$firmenzulassung->grade;
     } else {
         $item['gradetype'] = GRADE_TYPE_NONE;
     }
@@ -350,40 +350,40 @@ function apsechs_grade_item_update(stdClass $apsechs, $reset=false) {
         $item['reset'] = true;
     }
 
-    grade_update('mod/apsechs', $apsechs->course, 'mod', 'apsechs',
-            $apsechs->id, 0, null, $item);
+    grade_update('mod/firmenzulassung', $firmenzulassung->course, 'mod', 'firmenzulassung',
+            $firmenzulassung->id, 0, null, $item);
 }
 
 /**
- * Delete grade item for given apsechs instance
+ * Delete grade item for given firmenzulassung instance
  *
- * @param stdClass $apsechs instance object
+ * @param stdClass $firmenzulassung instance object
  * @return grade_item
  */
-function apsechs_grade_item_delete($apsechs) {
+function firmenzulassung_grade_item_delete($firmenzulassung) {
     global $CFG;
     require_once($CFG->libdir.'/gradelib.php');
 
-    return grade_update('mod/apsechs', $apsechs->course, 'mod', 'apsechs',
-            $apsechs->id, 0, null, array('deleted' => 1));
+    return grade_update('mod/firmenzulassung', $firmenzulassung->course, 'mod', 'firmenzulassung',
+            $firmenzulassung->id, 0, null, array('deleted' => 1));
 }
 
 /**
- * Update apsechs grades in the gradebook
+ * Update firmenzulassung grades in the gradebook
  *
  * Needed by {@link grade_update_mod_grades()}.
  *
- * @param stdClass $apsechs instance object with extra cmidnumber and modname property
+ * @param stdClass $firmenzulassung instance object with extra cmidnumber and modname property
  * @param int $userid update grade of specific user only, 0 means all participants
  */
-function apsechs_update_grades(stdClass $apsechs, $userid = 0) {
+function firmenzulassung_update_grades(stdClass $firmenzulassung, $userid = 0) {
     global $CFG, $DB;
     require_once($CFG->libdir.'/gradelib.php');
 
     // Populate array of grade objects indexed by userid.
     $grades = array();
 
-    grade_update('mod/apsechs', $apsechs->course, 'mod', 'apsechs', $apsechs->id, 0, $grades);
+    grade_update('mod/firmenzulassung', $firmenzulassung->course, 'mod', 'firmenzulassung', $firmenzulassung->id, 0, $grades);
 }
 
 /* File API */
@@ -399,14 +399,14 @@ function apsechs_update_grades(stdClass $apsechs, $userid = 0) {
  * @param stdClass $context
  * @return array of [(string)filearea] => (string)description
  */
-function apsechs_get_file_areas($course, $cm, $context) {
+function firmenzulassung_get_file_areas($course, $cm, $context) {
     return array();
 }
 
 /**
- * File browsing support for apsechs file areas
+ * File browsing support for firmenzulassung file areas
  *
- * @package mod_apsechs
+ * @package mod_firmenzulassung
  * @category files
  *
  * @param file_browser $browser
@@ -420,25 +420,25 @@ function apsechs_get_file_areas($course, $cm, $context) {
  * @param string $filename
  * @return file_info instance or null if not found
  */
-function apsechs_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename) {
+function firmenzulassung_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename) {
     return null;
 }
 
 /**
- * Serves the files from the apsechs file areas
+ * Serves the files from the firmenzulassung file areas
  *
- * @package mod_apsechs
+ * @package mod_firmenzulassung
  * @category files
  *
  * @param stdClass $course the course object
  * @param stdClass $cm the course module object
- * @param stdClass $context the apsechs's context
+ * @param stdClass $context the firmenzulassung's context
  * @param string $filearea the name of the file area
  * @param array $args extra arguments (itemid, path)
  * @param bool $forcedownload whether or not force download
  * @param array $options additional options affecting the file serving
  */
-function apsechs_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options=array()) {
+function firmenzulassung_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options=array()) {
     global $DB, $CFG;
 
     if ($context->contextlevel != CONTEXT_MODULE) {
@@ -453,28 +453,28 @@ function apsechs_pluginfile($course, $cm, $context, $filearea, array $args, $for
 /* Navigation API */
 
 /**
- * Extends the global navigation tree by adding apsechs nodes if there is a relevant content
+ * Extends the global navigation tree by adding firmenzulassung nodes if there is a relevant content
  *
  * This can be called by an AJAX request so do not rely on $PAGE as it might not be set up properly.
  *
- * @param navigation_node $navref An object representing the navigation tree node of the apsechs module instance
+ * @param navigation_node $navref An object representing the navigation tree node of the firmenzulassung module instance
  * @param stdClass $course current course record
- * @param stdClass $module current apsechs instance record
+ * @param stdClass $module current firmenzulassung instance record
  * @param cm_info $cm course module information
  */
-function apsechs_extend_navigation(navigation_node $navref, stdClass $course, stdClass $module, cm_info $cm) {
+function firmenzulassung_extend_navigation(navigation_node $navref, stdClass $course, stdClass $module, cm_info $cm) {
     // TODO Delete this function and its docblock, or implement it.
 }
 
 /**
- * Extends the settings navigation with the apsechs settings
+ * Extends the settings navigation with the firmenzulassung settings
  *
- * This function is called when the context for the page is a apsechs module. This is not called by AJAX
+ * This function is called when the context for the page is a firmenzulassung module. This is not called by AJAX
  * so it is safe to rely on the $PAGE.
  *
  * @param settings_navigation $settingsnav complete settings navigation tree
- * @param navigation_node $apsechsnode apsechs administration node
+ * @param navigation_node $firmenzulassungnode firmenzulassung administration node
  */
-function apsechs_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $apsechsnode=null) {
+function firmenzulassung_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $firmenzulassungnode=null) {
     // TODO Delete this function and its docblock, or implement it.
 }

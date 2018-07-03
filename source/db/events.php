@@ -13,24 +13,21 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
- * Defines the version and other meta-info about the plugin
- *
- * Setting the $plugin->version to 0 prevents the plugin from being installed.
- * See https://docs.moodle.org/dev/version.php for more info.
+ * Add event handlers for monitoring account creation for dual partners
  *
  * @package    mod_firmenzulassung
- * @copyright  2016 Your Name <your@email.address>
+ * @category   event
+ * @copyright  2018 Wiktoria Staszak
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+ // Event listener for new users beig enrolled
+ // The event triggers the function dual_partner_added
 defined('MOODLE_INTERNAL') || die();
-
-$plugin->component = 'mod_firmenzulassung';
-$plugin->version = 2018070200;
-$plugin->release = '2018070200';
-$plugin->requires = 2014051200;
-$plugin->maturity = MATURITY_ALPHA;
-$plugin->cron = 0;
-$plugin->dependencies = array();
+$observers = array(    
+    array(
+        'eventname' => 'core\event\user_enrolment_created',
+        'callback' => '\mod_firmenzulassung\group_observers::dual_partner_added',
+    )
+);

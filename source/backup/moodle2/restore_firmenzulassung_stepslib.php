@@ -15,23 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Define all the restore steps that will be used by the restore_apsechs_activity_task
+ * Define all the restore steps that will be used by the restore_firmenzulassung_activity_task
  *
- * @package   mod_apsechs
+ * @package   mod_firmenzulassung
  * @category  backup
  * @copyright 2016 Your Name <your@email.address>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
- * Structure step to restore one apsechs activity
+ * Structure step to restore one firmenzulassung activity
  *
- * @package   mod_apsechs
+ * @package   mod_firmenzulassung
  * @category  backup
  * @copyright 2016 Your Name <your@email.address>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class restore_apsechs_activity_structure_step extends restore_activity_structure_step {
+class restore_firmenzulassung_activity_structure_step extends restore_activity_structure_step {
 
     /**
      * Defines structure of path elements to be processed during the restore
@@ -41,7 +41,7 @@ class restore_apsechs_activity_structure_step extends restore_activity_structure
     protected function define_structure() {
 
         $paths = array();
-        $paths[] = new restore_path_element('apsechs', '/activity/apsechs');
+        $paths[] = new restore_path_element('firmenzulassung', '/activity/firmenzulassung');
 
         // Return the paths wrapped into standard activity structure.
         return $this->prepare_activity_structure($paths);
@@ -52,7 +52,7 @@ class restore_apsechs_activity_structure_step extends restore_activity_structure
      *
      * @param array $data parsed element data
      */
-    protected function process_apsechs($data) {
+    protected function process_firmenzulassung($data) {
         global $DB;
 
         $data = (object)$data;
@@ -72,8 +72,8 @@ class restore_apsechs_activity_structure_step extends restore_activity_structure
             $data->grade = -($this->get_mappingid('scale', abs($data->grade)));
         }
 
-        // Create the apsechs instance.
-        $newitemid = $DB->insert_record('apsechs', $data);
+        // Create the firmenzulassung instance.
+        $newitemid = $DB->insert_record('firmenzulassung', $data);
         $this->apply_activity_instance($newitemid);
     }
 
@@ -81,7 +81,7 @@ class restore_apsechs_activity_structure_step extends restore_activity_structure
      * Post-execution actions
      */
     protected function after_execute() {
-        // Add apsechs related files, no need to match by itemname (just internally handled context).
-        $this->add_related_files('mod_apsechs', 'intro', null);
+        // Add firmenzulassung related files, no need to match by itemname (just internally handled context).
+        $this->add_related_files('mod_firmenzulassung', 'intro', null);
     }
 }

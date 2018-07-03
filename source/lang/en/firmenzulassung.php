@@ -16,30 +16,30 @@
 
 
 /**
- * English strings for apsechs
+ * English strings for firmenzulassung
  *
  * You can have a rather longer description of the file as well,
  * if you like, and it can span multiple lines.
  *
- * @package    mod_apsechs
+ * @package    mod_firmenzulassung
  * @copyright  2016 Your Name <your@email.address>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['modulename'] = 'apsechs';
-$string['modulenameplural'] = 'apsechs';
-$string['modulename_help'] = 'Use the apsechs module for... | The apsechs module allows...';
-$string['apsechs:addinstance'] = 'Add a new apsechs';
-$string['apsechs:submit'] = 'Submit apsechs';
-$string['apsechs:view'] = 'View apsechs';
-$string['apsechsfieldset'] = 'Custom example fieldset';
-$string['apsechsname'] = 'apsechs name';
-$string['apsechsname_help'] = 'This is the content of the help tooltip associated with the apsechsname field. Markdown syntax is supported.';
-$string['apsechs'] = 'apsechs';
-$string['pluginadministration'] = 'apsechs administration';
-$string['pluginname'] = 'apsechs';
+$string['modulename'] = 'firmenzulassung';
+$string['modulenameplural'] = 'firmenzulassung';
+$string['modulename_help'] = 'Use the firmenzulassung module for... | The firmenzulassung module allows...';
+$string['firmenzulassung:addinstance'] = 'Add a new firmenzulassung';
+$string['firmenzulassung:submit'] = 'Submit firmenzulassung';
+$string['firmenzulassung:view'] = 'View firmenzulassung';
+$string['firmenzulassungfieldset'] = 'Custom example fieldset';
+$string['firmenzulassungname'] = 'firmenzulassung name';
+$string['firmenzulassungname_help'] = 'This is the content of the help tooltip associated with the firmenzulassungname field. Markdown syntax is supported.';
+$string['firmenzulassung'] = 'firmenzulassung';
+$string['pluginadministration'] = 'firmenzulassung administration';
+$string['pluginname'] = 'firmenzulassung';
 
 
 $string['title'] = 'Antrag auf Zulassung';
@@ -130,3 +130,6 @@ $string['genehmigen'] = 'Genehmigen';
 $string['ablehen'] = 'Ablehen';
 $string['drucken'] = 'Drucken';
 $string['download'] = 'Download';
+
+$string['maincategory'] ='maincategory';
+
