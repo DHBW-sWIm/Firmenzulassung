@@ -68,7 +68,7 @@ function xmldb_firmenzulassung_upgrade($oldversion) {
      *
      * First example, some fields were added to install.xml on 2007/04/01
      */
-    if ($oldversion < 2018070200) { //IMPORTANT -> ALWAYS UPDATE THIS -> CURRENT DATE!!!!!!!!!
+    if ($oldversion < 201807051307) { //IMPORTANT -> ALWAYS UPDATE THIS -> CURRENT DATE!!!!!!!!!
 
         // Define field course to be added to firmenzulassung.
         $table = new xmldb_table('antraege');
@@ -100,7 +100,7 @@ function xmldb_firmenzulassung_upgrade($oldversion) {
 
         // Once we reach this point, we can store the new version and consider the module
         // ... upgraded to the version 2007040100 so the next time this block is skipped.
-        upgrade_mod_savepoint(true, 2007040100, 'firmenzulassung');
+        upgrade_mod_savepoint(true, 201807051307, 'firmenzulassung');
     }
 
     // Second example, some hours later, the same day 2007/04/01
