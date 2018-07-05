@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines backup_apsechs_activity_task class
+ * Defines backup_firmenzulassung_activity_task class
  *
- * @package   mod_apsechs
+ * @package   mod_firmenzulassung
  * @category  backup
  * @copyright 2016 Your Name <your@email.address>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,17 +25,17 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/mod/apsechs/backup/moodle2/backup_apsechs_stepslib.php');
+require_once($CFG->dirroot . '/mod/firmenzulassung/backup/moodle2/backup_firmenzulassung_stepslib.php');
 
 /**
- * Provides the steps to perform one complete backup of the apsechs instance
+ * Provides the steps to perform one complete backup of the firmenzulassung instance
  *
- * @package   mod_apsechs
+ * @package   mod_firmenzulassung
  * @category  backup
  * @copyright 2016 Your Name <your@email.address>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class backup_apsechs_activity_task extends backup_activity_task {
+class backup_firmenzulassung_activity_task extends backup_activity_task {
 
     /**
      * No specific settings for this activity
@@ -44,10 +44,10 @@ class backup_apsechs_activity_task extends backup_activity_task {
     }
 
     /**
-     * Defines a backup step to store the instance data in the apsechs.xml file
+     * Defines a backup step to store the instance data in the firmenzulassung.xml file
      */
     protected function define_my_steps() {
-        $this->add_step(new backup_apsechs_activity_structure_step('apsechs_structure', 'apsechs.xml'));
+        $this->add_step(new backup_firmenzulassung_activity_structure_step('firmenzulassung_structure', 'firmenzulassung.xml'));
     }
 
     /**
@@ -61,13 +61,13 @@ class backup_apsechs_activity_task extends backup_activity_task {
 
         $base = preg_quote($CFG->wwwroot, '/');
 
-        // Link to the list of apsechss.
-        $search = '/('.$base.'\/mod\/apsechs\/index.php\?id\=)([0-9]+)/';
-        $content = preg_replace($search, '$@APSECHSINDEX*$2@$', $content);
+        // Link to the list of firmenzulassungs.
+        $search = '/('.$base.'\/mod\/firmenzulassung\/index.php\?id\=)([0-9]+)/';
+        $content = preg_replace($search, '$@FIRMENZULASSUNGINDEX*$2@$', $content);
 
-        // Link to apsechs view by moduleid.
-        $search = '/('.$base.'\/mod\/apsechs\/view.php\?id\=)([0-9]+)/';
-        $content = preg_replace($search, '$@APSECHSVIEWBYID*$2@$', $content);
+        // Link to firmenzulassung view by moduleid.
+        $search = '/('.$base.'\/mod\/firmenzulassung\/view.php\?id\=)([0-9]+)/';
+        $content = preg_replace($search, '$@FIRMENZULASSUNGVIEWBYID*$2@$', $content);
 
         return $content;
     }

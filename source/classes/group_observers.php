@@ -16,17 +16,17 @@
 /**
  * Group observers.
  *
- * @package    mod_apsechs
+ * @package    mod_firmenzulassung
  * @copyright  2018 Wiktoria Staszak
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_apsechs;
+namespace mod_firmenzulassung;
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/mod/assign/locallib.php');
 /**
  * Group observers class.
  *
- * @package    mod_apsechs
+ * @package    mod_firmenzulassung
  * @copyright  2016 Your Name <your@email.address>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

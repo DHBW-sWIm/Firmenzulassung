@@ -5,30 +5,30 @@ this module template code.
 
 * Unzip the archive and read this file
 
-* Rename the apsechs/ folder to the name of your module (eg "widget").
+* Rename the firmenzulassung/ folder to the name of your module (eg "widget").
   The module folder MUST be lower case and can't contain underscores. You should check the CVS contrib
   area at http://cvs.moodle.org/contrib/plugins/mod/ to make sure that
   your name is not already used by an other module. Registering the plugin
   name @ http://moodle.org/plugins will secure it for you.
 
 * Edit all the files in this directory and its subdirectories and change
-  all the instances of the string "apsechs" to your module name
+  all the instances of the string "firmenzulassung" to your module name
   (eg "widget"). If you are using Linux, you can use the following command
-  $ find . -type f -exec sed -i 's/apsechs/widget/g' {} \;
-  $ find . -type f -exec sed -i 's/APSECHS/WIDGET/g' {} \;
+  $ find . -type f -exec sed -i 's/firmenzulassung/widget/g' {} \;
+  $ find . -type f -exec sed -i 's/FIRMENZULASSUNG/WIDGET/g' {} \;
 
   On a mac, use:
-  $ find . -type f -exec sed -i '' 's/apsechs/widget/g' {} \;
-  $ find . -type f -exec sed -i '' 's/APSECHS/WIDGET/g' {} \;
+  $ find . -type f -exec sed -i '' 's/firmenzulassung/widget/g' {} \;
+  $ find . -type f -exec sed -i '' 's/FIRMENZULASSUNG/WIDGET/g' {} \;
 
-* Rename the file lang/en/apsechs.php to lang/en/widget.php
+* Rename the file lang/en/firmenzulassung.php to lang/en/widget.php
   where "widget" is the name of your module
 
-* Rename all files in backup/moodle2/ folder by replacing "apsechs" with
+* Rename all files in backup/moodle2/ folder by replacing "firmenzulassung" with
   the name of your module
 
   On Linux you can perform this and previous steps by calling:
-  $ find . -depth -name '*apsechs*' -execdir bash -c 'mv -i "$1" "${1//apsechs/widget}"' bash {} \;
+  $ find . -depth -name '*firmenzulassung*' -execdir bash -c 'mv -i "$1" "${1//firmenzulassung/widget}"' bash {} \;
 
 * Place the widget folder into the /mod folder of the moodle
   directory.
@@ -39,7 +39,7 @@ this module template code.
   the module's tables successfully created
 
 * Go to Site Administration > Plugins > Activity modules > Manage activities
-  and you should find that this apsechs has been added to the list of
+  and you should find that this firmenzulassung has been added to the list of
   installed modules.
 
 * You may now proceed to run your own code in an attempt to develop
