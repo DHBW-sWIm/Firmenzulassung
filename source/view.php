@@ -81,6 +81,11 @@ $record->reward=  '850';
 $record->imparting=  '0';
 $record->start=  '01.01.930';
 $record->major_present=  'ja';
+$record->responsible=  'Martin, Clemens';
+$record->status=  '0';
+$record->visit=  '0';
+$record->visit_date=  'none';
+$record->app_date=  '07.07.2018';
 
 
 $DB->insert_record('antraege', $record, $returnid=false, $bulk=false);
@@ -116,24 +121,26 @@ $attributes = array();
 $resource = $DB->get_records('antraege');
 
 $table = new html_table();
-$table->head = array('ID','firstname', 'surname', 'company', 'phone', 'email', 'Edit', 'Delete');
+$table->head = array('ID','Bewerbungsdatum', 'Status','Firma', 'Unternehmensvertreter', 'Verantwortlicher', 'Edit', 'Delete', 'Vertreter wählen');
 
 //Für jeden Datensatz
 foreach ($resource as $res) {
 $id = $res->id;
-$firstname = $res->firstname;
-$surname = $res->surname;
+$app_date = $res->app_date;
+$status = $res->status;
 $company = $res->company;
-$phone = $res->phone;
-$email = $res->email;
+$surname = $res->surname;
+$responsible = $res->responsible;
 
 
 //Link zum Bearbeiten der aktuellen Ressource in foreach-Schleife setzen
 $htmlLink = html_writer::link(new moodle_url('../firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $res->id)), 'Edit', $attributes=null);
 //Analog: Link zum Löschen...
 $htmlLinkDelete = html_writer::link(new moodle_url('../firmenzulassung/delete.php', array('id' => $cm->id, 'anfrageid' => $res->id)), 'Delete', $attributes=null);
+//Analog: Link Vertreter Bearbeiten...
+$htmlLinkResponsible = html_writer::link(new moodle_url('../firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $res->id)), 'Vertreter wählen', $attributes=null);
 //Daten zuweisen an HTML-Tabelle
-$table->data[] = array($id, $firstname, $surname, $company, $phone, $email, $htmlLink, $htmlLinkDelete);
+$table->data[] = array($id, $app_date, $status, $company, $surname, $responsible, $htmlLink, $htmlLinkDelete, $htmlLinkResponsible);
 }
 //Tabelle ausgeben
 echo html_writer::table($table);

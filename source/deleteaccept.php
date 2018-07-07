@@ -29,11 +29,11 @@ $event = \mod_firmenzulassung\event\course_module_viewed::create(array(
 $event->add_record_snapshot('course', $PAGE->course);
 $event->add_record_snapshot($PAGE->cm->modname, $firmenzulassung);
 $event->trigger();
-$resID = $_GET['resourceid'];
+$resID = $_GET['anfrageid'];
 $resName = $_GET['resname'];
 
 /*PAGE Setzen*/
-$PAGE->set_url('/mod/firmenzulassung/deleteaccept.php', array('id' => $cm->id,'resourceid' => $resID));
+$PAGE->set_url('/mod/firmenzulassung/deleteaccept.php', array('id' => $cm->id,'anfrageid' => $resID));
 $PAGE->set_title(format_string($firmenzulassung->name));
 echo nl2br("\n");
 $PAGE->set_heading(format_string($course->fullname));

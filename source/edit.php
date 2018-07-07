@@ -27,7 +27,7 @@ $event->add_record_snapshot($PAGE->cm->modname, $firmenzulassung);
 $event->trigger();
 
 /*PAGE SETZEN*/
-$PAGE->set_url('/mod/firmenzulassung/edit.php', array('id' => $cm->id,'resourceid' => $_GET['resourceid']));
+$PAGE->set_url('/mod/firmenzulassung/edit.php', array('id' => $cm->id,'anfrageid' => $_GET['anfrageid']));
 $PAGE->set_title(format_string($firmenzulassung->name));
 $PAGE->set_heading(format_string($course->fullname));
 
@@ -44,9 +44,9 @@ $strUrl = $url.'';
 // erster Seitenaufbau -> Formular erstellen und mit Werten der ausgewählten Ressource vorbelegen
 //// bei dem ersten Aufbau sind Kursid und Ressorucenid noch in der Moodle-Url gesetzt, hiernach prüfen
 // zweiter Seitenaufbau nachdem Formular abgesendet wurde, wird die DB aktualisiert und Erfoolg ausgegeben
-if(strpos($strUrl, 'resourceid=')==true){
+if(strpos($strUrl, 'anfrageid=')==true){
     //Erster Durchlauf
-    $resID = $_GET['resourceid'];
+    $resID = $_GET['anfrageid'];
     $sql= 'SELECT * FROM {antraege} WHERE id ='.$resID.';';
     $resource = $DB->get_record_sql($sql, array($resID));
 	$resMajor_request = $resource->major_request;
@@ -87,7 +87,7 @@ if(strpos($strUrl, 'resourceid=')==true){
     //Formulardaten verarbeiten
     if ($fromform = $mform->get_data()) {
         error_log("TEST FROM DIRECTLY AFTER SUBMIT");
-        $fm_resid = $fromform->resourceid;
+        $fm_resid = $fromform->anfrageid;
 		//Angaben zum Antragssteller / Unternehmensvertreter
 		$fm_major_request = $fromform->major_request;
         $fm_name = $fromform->surname;
@@ -132,7 +132,7 @@ if(strpos($strUrl, 'resourceid=')==true){
             //error_log("EXECUTION OF TASK RESPONSE");
         */
         //Formwerte in Variablen speichern
-        $fm_resid = $fromform->resourceid;
+        $fm_resid = $fromform->anfrageid;
 		$fm_major_request= $fromform->major_request;
         $fm_name = $fromform->surname;
         $fm_firstname = $fromform->firstname;
@@ -190,7 +190,7 @@ if(strpos($strUrl, 'resourceid=')==true){
     else {
         // falls die Daten des Formulars nicht validiert wurden oder für die erste Anzeige des Formulars
         
-        $formdata = array('id' => $id, 'resourceid' => $resID); // Moodle braucht die Moodle-Kursid, diese war hidden-input im Formular und wird hier gesetzt
+        $formdata = array('id' => $id, 'anfrageid' => $resID); // Moodle braucht die Moodle-Kursid, diese war hidden-input im Formular und wird hier gesetzt
         $mform->set_data($formdata);
         //Formular anzeigen
         $mform->display();
@@ -209,7 +209,7 @@ else{
     //Formulardaten verarbeiten
     if ($fromform = $mform->get_data()) {
         error_log("TEST FROM DIRECTLY AFTER SUBMIT");
-        $fm_resid = $fromform->resourceid;
+        $fm_resid = $fromform->anfrageid;
 		$fm_major_request = $fromform->major_request;
         $fm_name = $fromform->name;
 		$fm_firstname = $fromform->firstname;
@@ -284,7 +284,7 @@ else{
     else {
 
     // falls die Daten des Formulars nicht validiert wurden oder für die erste Anzeige des Formulars
-    $formdata = array('id' => $id); // Moodle braucht die Moodle-Kursid, diese war hidden-input im Formular und wird hier gesetzt/*, 'resourceid' => $resID);*/
+    $formdata = array('id' => $id); // Moodle braucht die Moodle-Kursid, diese war hidden-input im Formular und wird hier gesetzt/*, 'anfrageid' => $resID);*/
     $mform->set_data($formdata);
     //Formular anzeigen
     $mform->display();
