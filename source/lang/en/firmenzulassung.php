@@ -16,30 +16,30 @@
 
 
 /**
- * English strings for apsechs
+ * English strings for firmenzulassung
  *
  * You can have a rather longer description of the file as well,
  * if you like, and it can span multiple lines.
  *
- * @package    mod_apsechs
+ * @package    mod_firmenzulassung
  * @copyright  2016 Your Name <your@email.address>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['modulename'] = 'apsechs';
-$string['modulenameplural'] = 'apsechs';
-$string['modulename_help'] = 'Use the apsechs module for... | The apsechs module allows...';
-$string['apsechs:addinstance'] = 'Add a new apsechs';
-$string['apsechs:submit'] = 'Submit apsechs';
-$string['apsechs:view'] = 'View apsechs';
-$string['apsechsfieldset'] = 'Custom example fieldset';
-$string['apsechsname'] = 'apsechs name';
-$string['apsechsname_help'] = 'This is the content of the help tooltip associated with the apsechsname field. Markdown syntax is supported.';
-$string['apsechs'] = 'apsechs';
-$string['pluginadministration'] = 'apsechs administration';
-$string['pluginname'] = 'apsechs';
+$string['modulename'] = 'firmenzulassung';
+$string['modulenameplural'] = 'firmenzulassung';
+$string['modulename_help'] = 'Use the firmenzulassung module for... | The firmenzulassung module allows...';
+$string['firmenzulassung:addinstance'] = 'Add a new firmenzulassung';
+$string['firmenzulassung:submit'] = 'Submit firmenzulassung';
+$string['firmenzulassung:view'] = 'View firmenzulassung';
+$string['firmenzulassungfieldset'] = 'Custom example fieldset';
+$string['firmenzulassungname'] = 'firmenzulassung name';
+$string['firmenzulassungname_help'] = 'This is the content of the help tooltip associated with the firmenzulassungname field. Markdown syntax is supported.';
+$string['firmenzulassung'] = 'firmenzulassung';
+$string['pluginadministration'] = 'firmenzulassung administration';
+$string['pluginname'] = 'firmenzulassung';
 
 
 $string['title'] = 'Antrag auf Zulassung';
@@ -51,6 +51,11 @@ $string['responsible'] = 'Verantwortlicher';
 $string['status'] = 'Status';
 $string['antragsdatum'] = 'Antragsdatum';
 $string['studiengang'] = 'Studiengang';
+
+$string['status0'] = 'neu';
+$string['status1'] = 'genehmigt durch Studiengangsleiter';
+$string['status2'] = 'genehmigt durch Dekan';
+$string['status3'] = 'genehmigt durch Rektorat';
 
 /**
  * Form 1. Angaben zum Angesteller als Unternehmen
@@ -113,10 +118,10 @@ $string['zulassungOpt5'] = '5';
  */
 $string['subtitleFinal'] = 'Zulassungsprozess';
 
-$string['zulassung1'] = 'Studiengangsleiter';
-$string['zulassung2'] = 'Dekan';
-$string['zulassung3'] = 'Rektorat';
-$string['zulassung4'] = 'Abschluss';
+$string['zulassung0'] = 'Studiengangsleiter';
+$string['zulassung1'] = 'Dekan';
+$string['zulassung2'] = 'Rektorat';
+$string['zulassung3'] = 'Abschluss';
 
 $string['besichtigt'] = 'Das Unternehmen wurde von verantwortliche Studiengangsleiter besichtigt.';
 $string['datumUNBes'] = 'Datum der Unternehmenbesichtigung';
@@ -125,3 +130,6 @@ $string['genehmigen'] = 'Genehmigen';
 $string['ablehen'] = 'Ablehen';
 $string['drucken'] = 'Drucken';
 $string['download'] = 'Download';
+
+$string['maincategory'] ='maincategory';
+

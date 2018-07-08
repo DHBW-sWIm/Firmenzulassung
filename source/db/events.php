@@ -16,7 +16,7 @@
 /**
  * Add event handlers for monitoring account creation for dual partners
  *
- * @package    mod_apsechs
+ * @package    mod_firmenzulassung
  * @category   event
  * @copyright  2018 Wiktoria Staszak
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -28,6 +28,6 @@ defined('MOODLE_INTERNAL') || die();
 $observers = array(    
     array(
         'eventname' => 'core\event\user_enrolment_created',
-        'callback' => '\mod_apsechs\group_observers::dual_partner_added',
+        'callback' => '\mod_firmenzulassung\group_observers::dual_partner_added',
     )
 );

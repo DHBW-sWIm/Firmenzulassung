@@ -1,4 +1,4 @@
-<XMLDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PATH="mod/firmenzulassung/db" VERSION="2018070700" COMMENT="XMLDB file for Moodle mod/firmenzulassung" xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
+<XMLDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PATH="mod/firmenzulassung/db" VERSION="2018070200" COMMENT="XMLDB file for Moodle mod/firmenzulassung" xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
 <TABLES>
 <TABLE NAME="firmenzulassung" COMMENT="Default comment for firmenzulassung, please edit me">
 <FIELDS>
@@ -40,12 +40,12 @@
 <FIELD NAME="chamber_name" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
 <FIELD NAME="chamber_city" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
 <FIELD NAME="reward" TYPE="int" LENGTH="5" NOTNULL="false" SEQUENCE="false"/>
-<FIELD NAME="imparting" TYPE="int" LENGTH="2" NOTNULL="false" SEQUENCE="false"/>
+<FIELD NAME="imparting" TYPE="binary" NOTNULL="false" SEQUENCE="false"/>
 <FIELD NAME="start" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
 <FIELD NAME="major_present" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
 <FIELD NAME="responsible" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
-<FIELD NAME="status" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false"/>
-<FIELD NAME="visit"  TYPE="int" LENGTH="2" NOTNULL="false" SEQUENCE="false"/>
+<FIELD NAME="status" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false"/>
+<FIELD NAME="visit" TYPE="binary" NOTNULL="false" SEQUENCE="false"/>
 <FIELD NAME="visit_date" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
 <FIELD NAME="app_date" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
 </FIELDS>

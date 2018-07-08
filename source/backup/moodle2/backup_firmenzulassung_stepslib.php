@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Define all the backup steps that will be used by the backup_apsechs_activity_task
+ * Define all the backup steps that will be used by the backup_firmenzulassung_activity_task
  *
- * @package   mod_apsechs
+ * @package   mod_firmenzulassung
  * @category  backup
  * @copyright 2016 Your Name <your@email.address>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,14 +26,14 @@
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * Define the complete apsechs structure for backup, with file and id annotations
+ * Define the complete firmenzulassung structure for backup, with file and id annotations
  *
- * @package   mod_apsechs
+ * @package   mod_firmenzulassung
  * @category  backup
  * @copyright 2016 Your Name <your@email.address>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class backup_apsechs_activity_structure_step extends backup_activity_structure_step {
+class backup_firmenzulassung_activity_structure_step extends backup_activity_structure_step {
 
     /**
      * Defines the backup structure of the module
@@ -45,22 +45,22 @@ class backup_apsechs_activity_structure_step extends backup_activity_structure_s
         // Get know if we are including userinfo.
         $userinfo = $this->get_setting_value('userinfo');
 
-        // Define the root element describing the apsechs instance.
-        $apsechs = new backup_nested_element('apsechs', array('id'), array(
+        // Define the root element describing the firmenzulassung instance.
+        $firmenzulassung = new backup_nested_element('firmenzulassung', array('id'), array(
             'name', 'intro', 'introformat', 'grade'));
 
         // If we had more elements, we would build the tree here.
 
         // Define data sources.
-        $apsechs->set_source_table('apsechs', array('id' => backup::VAR_ACTIVITYID));
+        $firmenzulassung->set_source_table('firmenzulassung', array('id' => backup::VAR_ACTIVITYID));
 
         // If we were referring to other tables, we would annotate the relation
         // with the element's annotate_ids() method.
 
         // Define file annotations (we do not use itemid in this example).
-        $apsechs->annotate_files('mod_apsechs', 'intro', null);
+        $firmenzulassung->annotate_files('mod_firmenzulassung', 'intro', null);
 
-        // Return the root element (apsechs), wrapped into standard activity structure.
-        return $this->prepare_activity_structure($apsechs);
+        // Return the root element (firmenzulassung), wrapped into standard activity structure.
+        return $this->prepare_activity_structure($firmenzulassung);
     }
 }

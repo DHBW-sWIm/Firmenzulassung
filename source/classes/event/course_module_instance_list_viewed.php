@@ -15,21 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_apsechs instance list viewed event.
+ * The mod_firmenzulassung instance list viewed event.
  *
- * @package    mod_apsechs
+ * @package    mod_firmenzulassung
  * @copyright  2016 Your Name <your@email.address>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_apsechs\event;
+namespace mod_firmenzulassung\event;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * The mod_apsechs instance list viewed event class.
+ * The mod_firmenzulassung instance list viewed event class.
  *
- * @package    mod_apsechs
+ * @package    mod_firmenzulassung
  * @copyright  2016 Your Name <your@email.address>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

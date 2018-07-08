@@ -15,12 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Internal library of functions for module apsechs
+ * Internal library of functions for module firmenzulassung
  *
- * All the apsechs specific functions, needed to implement the module
+ * All the firmenzulassung specific functions, needed to implement the module
  * logic, should go here. Never include this file from your lib.php!
  *
- * @package    mod_apsechs
+ * @package    mod_firmenzulassung
  * @copyright  2016 Your Name <your@email.address>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -81,11 +81,11 @@ function create_api_instances() {
 	);
 }
 
-function apsechs_do_something_useful(array $things) {
+function firmenzulassung_do_something_useful(array $things) {
     return new stdClass();
 }
 
-function apsechs_get_process_definition_id($processKey) {
+function firmenzulassung_get_process_definition_id($processKey) {
 	global $processDefinitionsApiInstance;
 
 	$version = null; // int | Only return process definitions with the given version.
@@ -104,8 +104,7 @@ function apsechs_get_process_definition_id($processKey) {
 	$sort = "version"; // string | Property to sort on, to be used together with the order.
 	try {
 		$result = $processDefinitionsApiInstance->getProcessDefinitions($version, $name, $name_like, $processKey, $key_like, $resource_name, $resource_name_like, $category, $category_like, $category_not_equals, $deployment_id, $startable_by_user, $latest, $suspended, $sort);
-		$process_definition_id = $result['data'][0]->id;
-
+        $process_definition_id = "meisterkey:1:10870"; //fix gesetzt, sollte bei Activit-Integration dynamisch aufgebaut werden
 		return $process_definition_id;
 	} catch (Exception $e) {
 		echo 'Exception when calling ProcessDefinitionsApi->getProcessDefinitions: ', 	$e->getMessage(), PHP_EOL;
@@ -113,14 +112,14 @@ function apsechs_get_process_definition_id($processKey) {
 	}
 }
 
-function apsechs_start_process($process_definition_id, $business_key) {
+function firmenzulassung_start_process($process_definition_id, $business_key) {
 	global $processInstancesApiInstance;
 
 	$requestArray = array(
-		process_definition_id => $process_definition_id,
-		business_key => $business_key
+		'process_definition_id' => $process_definition_id,
+		'business_key' => $business_key
 	);
-	$body = new \Swagger\Client\Model\ProcessInstanceCreateRequest($requestArray); // \Swagger\Client\Model\ProcessInstanceCreateRequest | 
+	$body = new \Swagger\Client\Model\ProcessInstanceCreateRequest($requestArray); // \Swagger\Client\Model\ProcessInstanceCreateRequest |
 
 	// attempt to create instance for process
 	try {
@@ -136,7 +135,7 @@ function apsechs_start_process($process_definition_id, $business_key) {
 	}
 }
 
-function apsechs_check_for_input_required($process_instance_id) {
+function firmenzulassung_check_for_input_required($process_instance_id) {
 	global $tasksApiInstance;
 	try {
 		$result = $tasksApiInstance->getTasks(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, $process_instance_id, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
@@ -154,7 +153,73 @@ function apsechs_check_for_input_required($process_instance_id) {
 	}
 }
 
-function apsechs_answer_input_required($task_id, $process_definition_id, $value1, $value2) {
+
+//TODO J&C
+function firmenzulassung_answer_input_required_resources($task_id, $process_definition_id,
+$resName, $resDescription, $resSerNumber, $resInvNumber,$resComment,$resStatus,$resAmount,$resType,$resMainCategory,$resSubCategory) {
+	global $formsApiInstance;
+
+	$formArray = array(
+		'action' => 'submit',
+		'task_id' => $task_id,
+		'process_definition_id' => $process_definition_id,
+		'properties' => array(
+			array(
+				'id' => 'name',
+				'value' => $resName
+			),
+			array(
+				'id' => 'description',
+				'value' => $resDescription
+			),
+			array(
+				'id' => 'serialnumber',
+				'value' => $resSerNumber
+			),
+			array(
+				'id' => 'inventorynumber',
+				'value' => $resInvNumber
+			),
+			array(
+				'id' => 'comment',
+				'value' => $resComment
+			),
+			array(
+				'id' => 'status',
+				'value' => $resStatus
+			),
+			array(
+				'id' => 'amount',
+				'value' => $resAmount
+			),
+			array(
+				'id' => 'type',
+				'value' => $resType
+			),
+			array(
+				'id' => 'maincategory',
+				'value' => $resMainCategory
+			),
+			array(
+				'id' => 'subcategory',
+				'value' => $resSubCategory
+			)
+		)
+	);
+
+	$body = new \Swagger\Client\Model\SubmitFormRequest($formArray); // \Swagger\Client\Model\SubmitFormRequest |
+
+	try {
+		$result = $formsApiInstance->submitForm($body);
+		//print_r($result);
+		return $result;
+	} catch (Exception $e) {
+		echo 'Exception when calling FormsApi->submitForm: ', $e->getMessage(), PHP_EOL;
+		return null;
+	}
+}
+
+function firmenzulassung_answer_input_required($task_id, $process_definition_id, $value1, $value2) {
 	global $formsApiInstance;
 
 	$formArray = array(
@@ -173,7 +238,7 @@ function apsechs_answer_input_required($task_id, $process_definition_id, $value1
 		)
 	);
 
-	$body = new \Swagger\Client\Model\SubmitFormRequest($formArray); // \Swagger\Client\Model\SubmitFormRequest | 
+	$body = new \Swagger\Client\Model\SubmitFormRequest($formArray); // \Swagger\Client\Model\SubmitFormRequest |
 
 	try {
 		$result = $formsApiInstance->submitForm($body);
@@ -185,7 +250,7 @@ function apsechs_answer_input_required($task_id, $process_definition_id, $value1
 	}
 }
 
-function apsechs_get_process_instance_status($process_instance_id) {
+function firmenzulassung_get_process_instance_status($process_instance_id) {
 	global $processInstancesApiInstance;
 
 	try {
@@ -199,3 +264,4 @@ function apsechs_get_process_instance_status($process_instance_id) {
 		return null;
 	}
 }
+
