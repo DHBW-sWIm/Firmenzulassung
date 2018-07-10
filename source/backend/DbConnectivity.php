@@ -107,9 +107,7 @@ class DbConnectivity {
         
     }
     
-    function getStudiengangs() {
-        // global $DB;
-        
+    function getStudiengangs() {     
         return [
             "id" => [1],
             "name" => ["Wirtschaftsinformatik"]
@@ -126,7 +124,7 @@ class DbConnectivity {
         
         $resp = [
             "user_id" => [1, 2, 3, 4, 5, 6, 7, 8],
-            "name" => ["Prof. Martin", "Prof. Pfisterer", "Prof. Koslowski", "Prof. Reichwald", "Prof. Holey", "Prof. Engel", "Prof. Wolff", "Prof. Focke"]
+            "name" => ["Prof. Dr. Hans-Peter Engel", "Prof. Dr. Kai Focke", "Prof. Dr. Thomas Holey", "Prof. Dr. Frank Koslowski", "Prof. Dr.-Ing. Clemens Martin", "Prof. Dr.-Ing. habil. Dennis Pfisterer", "Prof. Dr. Julian Reichwald",  "Prof. Dr. Frank Wolff"]
         ];
         
         array_unshift($resp["user_id"], -1);
