@@ -30,7 +30,7 @@ $event->add_record_snapshot($PAGE->cm->modname, $firmenzulassung);
 $event->trigger();
 
 /*PAGE setzen*/
-$PAGE->set_url('/mod/firmenzulassung/delete.php', array('id' => $cm->id,'resourceid' => $_GET['resourceid']));
+$PAGE->set_url('/mod/firmenzulassung/delete.php', array('id' => $cm->id,'anfrageid' => $_GET['anfrageid']));
 $PAGE->set_title(format_string($firmenzulassung->name));
 $PAGE->set_heading(format_string($course->fullname));
 
@@ -42,7 +42,7 @@ echo $OUTPUT->heading($strName);
 echo nl2br("\n");
 echo nl2br("\n");
 
-$resID = $_GET['resourceid']; //Wird von View-PHP mit dem Delete-Link übergeben
+$resID = $_GET['anfrageid']; //Wird von View-PHP mit dem Delete-Link übergeben
 $sql= 'SELECT name FROM {resources} WHERE id ='.$resID.';';
 $resource = $DB->get_record_sql($sql, array($resID));
 $resName = $resource->surname;
@@ -54,7 +54,7 @@ echo nl2br("\n");
 
 //Funktionstasten zum Abbrechen und Fortfahren
 echo $OUTPUT->single_button(new moodle_url('../firmenzulassung/view.php', array('id' => $cm->id)), 'abbrechen');
-echo html_writer::link(new moodle_url('../firmenzulassung/deleteaccept.php', array('id' => $cm->id, 'resourceid' => $resID, 'resname'=> $resName)), 'bestätigen', array('class' => 'btn btn-secondary'));
+echo html_writer::link(new moodle_url('../firmenzulassung/deleteaccept.php', array('id' => $cm->id, 'anfrageid' => $resID, 'resname'=> $resName)), 'bestätigen', array('class' => 'btn btn-secondary'));
 
 //FINISH
 echo $OUTPUT->footer();
