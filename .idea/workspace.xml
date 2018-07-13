@@ -27,7 +27,7 @@
       <file leaf-file-name="install.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/db/install.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
+            <state relative-caret-position="748">
               <caret line="44" column="17" lean-forward="false" selection-start-line="44" selection-start-column="17" selection-end-line="44" selection-end-column="17" />
               <folding />
             </state>
@@ -72,13 +72,25 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DbConnectivity.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="DbConnectivity.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/backend/DbConnectivity.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2981">
-              <caret line="17" column="77" lean-forward="false" selection-start-line="17" selection-start-column="69" selection-end-line="17" selection-end-column="77" />
+            <state relative-caret-position="487">
+              <caret line="221" column="26" lean-forward="true" selection-start-line="221" selection-start-column="26" selection-end-line="221" selection-end-column="26" />
               <folding>
                 <marker date="1531486457620" expanded="true" signature="7677:7806" ph="SELECT statu... applicationHistory" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="upgrade.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/source/db/upgrade.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="374">
+              <caret line="22" column="40" lean-forward="true" selection-start-line="22" selection-start-column="40" selection-end-line="22" selection-end-column="40" />
+              <folding>
+                <element signature="e#6#57#0#PHP" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -93,8 +105,8 @@
       <find>getCurr</find>
       <find>status</find>
       <find>$DB</find>
-      <find>antraege</find>
       <find>insert</find>
+      <find>antraege</find>
     </findStrings>
     <replaceStrings>
       <replace>firmenzulassung_antraege</replace>
@@ -111,6 +123,7 @@
         <option value="$PROJECT_DIR$/source/db/install.xml" />
         <option value="$PROJECT_DIR$/source/backend/DbConnectivity.php" />
         <option value="$PROJECT_DIR$/source/locallib.php" />
+        <option value="$PROJECT_DIR$/source/db/upgrade.php" />
       </list>
     </option>
   </component>
@@ -121,8 +134,8 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="953" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-7" />
     <option name="width" value="974" />
     <option name="height" value="1047" />
   </component>
@@ -228,18 +241,18 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1531477649587</updated>
-      <workItem from="1531477650946" duration="8088000" />
+      <workItem from="1531477650946" duration="12068000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="8088000" />
+    <option name="totallyTimeSpent" value="12068000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-7" y="0" width="974" height="1047" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13489583" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2703549" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
@@ -302,14 +315,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/db/install.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="44" column="17" lean-forward="false" selection-start-line="44" selection-start-column="17" selection-end-line="44" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/uebersicht.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1517">
@@ -328,10 +333,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/source/backend/DbConnectivity.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2981">
-          <caret line="17" column="77" lean-forward="false" selection-start-line="17" selection-start-column="69" selection-end-line="17" selection-end-column="77" />
+        <state relative-caret-position="487">
+          <caret line="221" column="26" lean-forward="true" selection-start-line="221" selection-start-column="26" selection-end-line="221" selection-end-column="26" />
           <folding>
             <marker date="1531486457620" expanded="true" signature="7677:7806" ph="SELECT statu... applicationHistory" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/db/install.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="748">
+          <caret line="44" column="17" lean-forward="false" selection-start-line="44" selection-start-column="17" selection-end-line="44" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/db/upgrade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="40" lean-forward="true" selection-start-line="22" selection-start-column="40" selection-end-line="22" selection-end-column="40" />
+          <folding>
+            <element signature="e#6#57#0#PHP" expanded="true" />
           </folding>
         </state>
       </provider>
