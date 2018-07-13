@@ -132,5 +132,7 @@ $string['ablehen'] = 'Ablehen';
 $string['drucken'] = 'Drucken';
 $string['download'] = 'Download';
 
+$string['speichern'] = 'Speichern';
+
 $string['maincategory'] ='maincategory';
 

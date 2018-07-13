@@ -141,7 +141,7 @@ $htmlLink = html_writer::link(new moodle_url('../firmenzulassung/uebersicht.php'
 //Analog: Link zum Löschen...
 $htmlLinkDelete = html_writer::link(new moodle_url('../firmenzulassung/delete.php', array('id' => $cm->id, 'anfrageid' => $res->id)), 'Delete', $attributes=null);
 //Analog: Link Vertreter Bearbeiten...
-$htmlLinkResponsible = html_writer::link(new moodle_url('../firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $res->id)), 'Vertreter wählen', $attributes=null);
+$htmlLinkResponsible = html_writer::link(new moodle_url('../firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $res->id, 'changeResp' => 1)), 'Vertreter wählen', $attributes=null);
 //Daten zuweisen an HTML-Tabelle
 $table->data[] = array($id, $app_date, $status, $company, $surname, $responsible, $htmlLink, $htmlLinkDelete, $htmlLinkResponsible);
 }

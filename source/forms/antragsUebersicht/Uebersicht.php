@@ -19,12 +19,18 @@ class Uebersicht extends moodleform {
         } else {
             return;
         }
+        
+        if (isset($_GET['editmode']) && ($_GET['editmode'] == 1)) {
+            $edit_mode = true;
+        } else if (isset($_GET['changeResp']) && ($_GET['changeResp'] == 1)) {
+            $change_responsible = true;
+        }
                 
         /**
          * Main part
          */
         
-        if (isset($change_responsible)) {
+        if (isset($change_responsible) || isset($edit_mode)) {
             $mform->addElement('select', 'responsible', get_string('responsible', 'mod_firmenzulassung'),
                 $dbConnectivity->getResponsibles()['name'],
                 $dbConnectivity->getResponsibles()['user_id']);
@@ -196,12 +202,20 @@ class Uebersicht extends moodleform {
         $mform->addElement('checkbox', 'besichtigt',  get_string('besichtigt', 'mod_firmenzulassung'));
         $mform->addElement('date_selector', 'datumUNehmenBes', get_string('datumUNBes', 'mod_firmenzulassung'));
         $mform->disabledIf('datumUNehmenBes', 'besichtigt');
-                
-        $mform->addElement('textarea', 'comment', get_string('kommentar', 'mod_firmenzulassung'), 'rows="10" cols="50"');
         
         $mainButons=array();
-        $mainButons[] =& $mform->createElement('submit', 'genehmigen', get_string('genehmigen', 'mod_firmenzulassung'));
-        $mainButons[] =& $mform->createElement('submit', 'ablehen', get_string('ablehen', 'mod_firmenzulassung'));
+        
+        if (isset($edit_mode)) {
+            $mainButons[] =& $mform->createElement('submit', 'save_edit', get_string('speichern', 'mod_firmenzulassung'));
+        } elseif (isset($change_responsible)) {
+            $mainButons[] =& $mform->createElement('submit', 'change_resp', get_string('speichern', 'mod_firmenzulassung'));
+        } else {
+            $mform->addElement('textarea', 'comment', get_string('kommentar', 'mod_firmenzulassung'), 'rows="10" cols="50"');
+            
+            $mainButons[] =& $mform->createElement('submit', 'genehmigen', get_string('genehmigen', 'mod_firmenzulassung'));
+            $mainButons[] =& $mform->createElement('submit', 'ablehen', get_string('ablehen', 'mod_firmenzulassung'));
+        }
+        
         $mainButons[] =& $mform->createElement('html', '<div class="form-group fitem"><button onclick="window.print()" style="background: url(icons/printIcon.png); background-repeat: no-repeat; background-size: 100%; border: none; height: 33px; width: 33px;"/></div>');
         $mform->addGroup($mainButons, 'mainBtns', '', array(' '), false);
         
