@@ -378,7 +378,7 @@ function processApplicationByStudiengangsleiter($applicationID, $isApproved, $re
 
             try {
                 // Update status in database
-                insertApplicationHistoryEntry($applicationID, $status, $reason);
+                DbConnectivity::insertApplicationHistoryEntry($applicationID, $status, $reason);
 
                 // Send mail/notification to next responsible user if update was successful
                 if ($isApproved == true) {
@@ -392,8 +392,8 @@ function processApplicationByStudiengangsleiter($applicationID, $isApproved, $re
 
                 } else {
                     // Email to companyRepresentative
-                    $email = $DB->get_field('antraege', 'email', array('id'=>$applicationID), $strictness=MUST_EXIST);
-                    $name = $DB->get_field('antraege', 'company', array('id'=>$applicationID), $strictness=MUST_EXIST);
+                    $email = $DB->get_field('firmenzulassung_antraege', 'email', array('id'=>$applicationID), $strictness=MUST_EXIST);
+                    $name = $DB->get_field('firmenzulassung_antraege', 'company', array('id'=>$applicationID), $strictness=MUST_EXIST);
                     $subject = 'Ihr Antrag wurde leider abgelehnt';
                     $message = 'Sehr geehrte Damen und Herren von '.$name.',
                     \nwir haben Ihren Antrag auf Zulassung an der DHBW mit folgender Begründung abgelehnt:
@@ -435,7 +435,7 @@ function processApplicationByDekan($applicationID, $isApproved, $reason) {
 
         try {
             // Update status in database
-            insertApplicationHistoryEntry($applicationID, $status, $reason);
+            DbConnectivity::insertApplicationHistoryEntry($applicationID, $status, $reason);
 
             // Send mail/notification to next responsible user if update was successful
             if ($isApproved == true) {
@@ -450,8 +450,8 @@ function processApplicationByDekan($applicationID, $isApproved, $reason) {
             } else {
                 if (isResponsibleStudiengangsleiter($currentUserID, $applicationID)) {
                     // Email to companyRepresentative
-                    $email = $DB->get_field('antraege', 'email', array('id'=>$applicationID), $strictness=MUST_EXIST);
-                    $name = $DB->get_field('antraege', 'company', array('id'=>$applicationID), $strictness=MUST_EXIST);
+                    $email = $DB->get_field('firmenzulassung_antraege', 'email', array('id'=>$applicationID), $strictness=MUST_EXIST);
+                    $name = $DB->get_field('firmenzulassung_antraege', 'company', array('id'=>$applicationID), $strictness=MUST_EXIST);
                     $subject = 'Ihr Antrag wurde leider abgelehnt';
                     $message = 'Sehr geehrte Damen und Herren von '.$name.',
                     \nwir haben Ihren Antrag auf Zulassung an der DHBW mit folgender Begründung abgelehnt:
@@ -495,7 +495,7 @@ function processApplicationByHochschulrat($applicationID, $isApproved, $reason) 
 
         try {
             // Update status in database
-            insertApplicationHistoryEntry($applicationID, $status, $reason);
+            DbConnectivity::insertApplicationHistoryEntry($applicationID, $status, $reason);
 
             // Send mail/notification to next responsible user if update was successful
             // Email to Studiengangsleiter
@@ -557,55 +557,6 @@ function sendEmailToResponsibleStudiengangsleiter($applicationID, $status) {
 
 /**
  * by Simon Wohlfahrt
- * @param $applicationID int
- * @param $status int
- * @param $reason string
- */
-function insertApplicationHistoryEntry($applicationID, $status, $reason) {
-    global $User;
-    global $DB;
-
-    $currentDateTime = new DateTime(core_date::get_server_timezone_object());
-
-    $record = new stdClass();
-    $record->user = $User->id;
-    $record->application_id = $applicationID;
-    $record->status = $status;
-    $record->reason = $reason;
-    $record->date = $currentDateTime->getTimestamp();
-
-    // Update status in database
-    try {
-        $DB->insert_record('applicationHistory', $record, false);
-    } catch (Exception $e) {
-        echo $e->getTraceAsString();
-        throw e;
-    }
-}
-
-function insertDefaultApplicationHistoryEntry($applicationID) {
-    global $DB;
-
-    $currentDateTime = new DateTime(core_date::get_server_timezone_object());
-
-    $record = new stdClass();
-    $record->user = 0;
-    $record->application_id = $applicationID;
-    $record->status = 0;
-    $record->reason = null;
-    $record->date = $currentDateTime->getTimestamp();
-
-    // Update status in database
-    try {
-        $DB->insert_record('applicationHistory', $record, false);
-    } catch (Exception $e) {
-        echo $e->getTraceAsString();
-        throw e;
-    }
-}
-
-/**
- * by Simon Wohlfahrt
  * @param $userID int
  * @param $applicationID int
  * @return bool
@@ -614,7 +565,7 @@ function isResponsibleStudiengangsleiter($userID, $applicationID) {
     global $DB;
 
     try {
-        $responsibleID = $DB->get_field('antraege', 'responsible', array('id'=>$applicationID), $strictness=MUST_EXIST);
+        $responsibleID = $DB->get_field('firmenzulassung_antraege', 'responsible', array('id'=>$applicationID), $strictness=MUST_EXIST);
         return $responsibleID == $userID;
     } catch (Exception $e) {
         echo $e->getTraceAsString();
@@ -630,7 +581,7 @@ function isResponsibleStudiengangsleiter($userID, $applicationID) {
 function getResponsibleStudiengangsleiter($applicationID) {
     global $DB;
 
-    $responsibleStudiengangsleiterID =  $DB->get_field('antraege', 'responsible', array('id'=>$applicationID), $strictness=MUST_EXIST);
+    $responsibleStudiengangsleiterID =  $DB->get_field('firmenzulassung_antraege', 'responsible', array('id'=>$applicationID), $strictness=MUST_EXIST);
     return $DB->get_record('user', array('id' => $responsibleStudiengangsleiterID));
 }
 
