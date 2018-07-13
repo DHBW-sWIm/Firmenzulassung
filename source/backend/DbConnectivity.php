@@ -15,7 +15,9 @@ class DbConnectivity {
         return [
             "general" => [
                 "requestDate" => $DB->get_field('antraege', 'app_date', array('id'=>$anfrage_id), $strictness=MUST_EXIST),
-                "currentStatus" => $DB->get_field('antraege', 'status', array('id'=>$anfrage_id), $strictness=MUST_EXIST),
+                //"currentStatus" => $DB->get_field('antraege', 'status', array('id'=>$anfrage_id), $strictness=MUST_EXIST),
+                //TODO: Testing (implemented by Simon Wohlfahrt)
+                "currentStatus" => getCurrentStatus($anfrage_id),
                 "studiengang" => 1,
                 "responsible" => $DB->get_field('antraege', 'responsible', array('id'=>$anfrage_id), $strictness=MUST_EXIST)
             ],
@@ -151,5 +153,32 @@ class DbConnectivity {
         $studiengangs = self::getStudiengangs();
         return $studiengangs["name"][array_search($studiengangs_id, $studiengangs["id"])];
     }
-    
+
+
+    /**
+     * @param $applicationID
+     * @return int
+     */
+    static function getCurrentStatus($applicationID) {
+        global $DB;
+
+        // Select the latest history entry (status change) for a specific applicationID.
+        $sql= 'SELECT status FROM {applicationHistory} WHERE id = ? AND date = (SELECT MAX(date) FROM {applicationHistory} WHERE id = ?);';
+
+        try {
+            $status = $DB->get_record_sql($sql, array($applicationID, $applicationID));
+
+            //TODO: add standard status entry if not exists
+            // if application with id $applicationID exists
+            // and no history entry is found
+            // add default history entry with insertDefaultApplicationHistoryEntry($applicationID);
+
+        } catch (Exception $e) {
+
+            echo $e->getTraceAsString();
+            return 0;
+        }
+
+        return $status;
+    }
 }

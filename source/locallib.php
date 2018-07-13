@@ -310,4 +310,386 @@ function generate_dummy_user($email, $name = '', $id = -99) {
 	$emailuser->alternatename = '';
 
 	return $emailuser;
-	}
+}
+
+
+/**
+ * by Simon Wohlfahrt
+ * @param $applicationID int
+ * @param $isApproved bool
+ * @param $reason string
+ * @throws Exception
+ */
+function processApplication($applicationID, $isApproved, $reason) {
+
+    $applicationStatus = DbConnectivity::getCurrentStatus($applicationID);
+
+    if ( $applicationStatus == null ) {
+        throw new Exception('The application ID '.$applicationID.' does not exist!');
+    }
+    // $applicationStatus == 'rejectedByStudiengangsleiter' || $applicationStatus == 'rejectedByDekan' || $applicationStatus == 'rejectedByHochschulrat'
+    elseif ($applicationStatus < 0) {
+        throw new Exception('The application has been already rejected!');
+    }
+    // $applicationStatus == 'approvedByHochschulrat'
+    elseif ($applicationStatus = 3) {
+        throw new Exception('The application has been approved by all instances already!');
+    }
+
+    switch ( $applicationStatus ) {
+        case 0:
+            processApplicationByStudiengangsleiter($applicationID, $isApproved, $reason);
+            break;
+        case 1:
+            processApplicationByDekan($applicationID, $isApproved, $reason);
+            break;
+        case 2:
+            processApplicationByHochschulrat($applicationID, $isApproved, $reason);
+            break;
+        default:
+            // not implemented
+            break;
+    }
+}
+
+/**
+ * by Simon Wohlfahrt
+ * @param $applicationID int
+ * @param $isApproved bool
+ * @param $reason string
+ * @throws Exception
+ */
+function processApplicationByStudiengangsleiter($applicationID, $isApproved, $reason) {
+
+    global $USER;
+    global $DB;
+
+    $currentUserID = &$USER->id;
+
+    if (isResponsibleStudiengangsleiter($currentUserID, $applicationID)) {
+        if (isAuthorizedDekan($currentUserID)) {
+            // continue as Dekan if current Studiengangsleiter is Dekan
+            processApplicationByDekan($applicationID, $isApproved, $reason);
+        } else {
+            if ($isApproved == true)
+                $status = 1;
+            else
+                $status = -1;
+
+            try {
+                // Update status in database
+                insertApplicationHistoryEntry($applicationID, $status, $reason);
+
+                // Send mail/notification to next responsible user if update was successful
+                if ($isApproved == true) {
+                    // Email to next process instance (Dekan)
+                    $email = getAuthorizedDekan($applicationID);
+                    $subject = 'neuer Antrag auf Zulassung zur Bearbeitung';
+                    $message = 'Ein Antrag auf Zulassung wurde durch '.fullname($USER).' genehmigt.
+                    \n\nBitte fahren Sie mit der Bearbeitung des Antrags fort.';
+
+                    mail_to($email, $USER, $subject, $message);
+
+                } else {
+                    // Email to companyRepresentative
+                    $email = $DB->get_field('antraege', 'email', array('id'=>$applicationID), $strictness=MUST_EXIST);
+                    $name = $DB->get_field('antraege', 'company', array('id'=>$applicationID), $strictness=MUST_EXIST);
+                    $subject = 'Ihr Antrag wurde leider abgelehnt';
+                    $message = 'Sehr geehrte Damen und Herren von '.$name.',
+                    \nwir haben Ihren Antrag auf Zulassung an der DHBW mit folgender Begründung abgelehnt:
+                    \n\"'.$reason.'\"
+                    \n\nmit freundlichen Grüßen,
+                    \n'.fullname($USER).'';
+
+                    mail_to($email, $name, $subject, $message);
+                }
+            } catch (Exception $e) {
+                echo $e->getTraceAsString();
+                throw e;
+            }
+        }
+    } else {
+        throw new Exception("You are not allowed to perform this task!");
+    }
+}
+
+/**
+ * by Simon Wohlfahrt
+ * @param $applicationID int
+ * @param $isApproved bool
+ * @param $reason string
+ * @throws Exception
+ */
+function processApplicationByDekan($applicationID, $isApproved, $reason) {
+
+    global $USER;
+    global $DB;
+
+    $currentUserID = &$USER->id;
+
+    if (isAuthorizedDekan($currentUserID)) {
+        if ($isApproved == true)
+            $status = 2;
+        else
+            $status = -2;
+
+        try {
+            // Update status in database
+            insertApplicationHistoryEntry($applicationID, $status, $reason);
+
+            // Send mail/notification to next responsible user if update was successful
+            if ($isApproved == true) {
+                // Email to next process instance (Hochschulrat)
+                // Email to next process instance (Dekan)
+                $email = getAuthorizedHochschulrat($applicationID);
+                $subject = 'neuer Antrag auf Zulassung zur Bearbeitung';
+                $message = 'Ein Antrag auf Zulassung wurde durch '.fullname($USER).' genehmigt.
+                    \n\nBitte fahren Sie mit der Bearbeitung des Antrags fort.';
+
+                mail_to($email, $USER, $subject, $message);
+            } else {
+                if (isResponsibleStudiengangsleiter($currentUserID, $applicationID)) {
+                    // Email to companyRepresentative
+                    $email = $DB->get_field('antraege', 'email', array('id'=>$applicationID), $strictness=MUST_EXIST);
+                    $name = $DB->get_field('antraege', 'company', array('id'=>$applicationID), $strictness=MUST_EXIST);
+                    $subject = 'Ihr Antrag wurde leider abgelehnt';
+                    $message = 'Sehr geehrte Damen und Herren von '.$name.',
+                    \nwir haben Ihren Antrag auf Zulassung an der DHBW mit folgender Begründung abgelehnt:
+                    \n\"'.$reason.'\"
+                    \n\nmit freundlichen Grüßen,
+                    \n'.fullname($USER).'';
+
+                    mail_to($email, $name, $subject, $message);
+                } else {
+                    // Email to Studiengangsleiter
+                    sendEmailToResponsibleStudiengangsleiter($applicationID, $status);
+                }
+            }
+        } catch (Exception $e) {
+            echo $e->getTraceAsString();
+            throw e;
+        }
+    } else {
+        throw new Exception("You are not allowed to perform this task!");
+    }
+}
+
+/**
+ * by Simon Wohlfahrt
+ * @param $applicationID int
+ * @param $isApproved bool
+ * @param $reason string
+ * @throws Exception
+ */
+function processApplicationByHochschulrat($applicationID, $isApproved, $reason) {
+
+    global $USER;
+
+    $currentUserID = &$USER->id;
+
+    if (isDekan($currentUserID)) {
+        if ($isApproved == true)
+            $status = 3;
+        else
+            $status = -3;
+
+        try {
+            // Update status in database
+            insertApplicationHistoryEntry($applicationID, $status, $reason);
+
+            // Send mail/notification to next responsible user if update was successful
+            // Email to Studiengangsleiter
+            sendEmailToResponsibleStudiengangsleiter($applicationID, $status);
+
+        } catch (Exception $e) {
+            echo $e->getTraceAsString();
+            throw e;
+        }
+    } else {
+        throw new Exception("You are not allowed to perform this task!");
+    }
+}
+
+/**
+ * by Simon Wohlfahrt
+ * @param $applicationID int
+ * @param $status int
+ * @return bool
+ */
+function sendEmailToResponsibleStudiengangsleiter($applicationID, $status) {
+    global $USER;
+
+    $responsibleStudiengangsleiter = getResponsibleStudiengangsleiter($applicationID);
+
+    switch ($status) {
+        case -2:
+            $subject = 'Antrag auf Zulassung vom Dekanat abgelehnt';
+            $message = 'Der Antrag auf Zulassung wurde durch '.fullname($USER).' abgelehnt.
+                    \n\nBitte informieren Sie den Antragsteller.';
+            $messageHTML = '';
+            break;
+        case 2:
+            $subject = 'Antrag auf Zulassung vom Dekanat genehmigt';
+            $message = 'Der Antrag auf Zulassung wurde durch '.fullname($USER).' genehmigt.
+                    \n\nDie Bearbeitung wird in nächster Instanz beim Hochschulrat fortgesetzt.';
+            $messageHTML = '';
+            break;
+        case -3:
+            $subject = 'Antrag auf Zulassung vom Hochschulrat abgelehnt';
+            $message = 'Der Antrag auf Zulassung wurde durch '.fullname($USER).' abgelehnt.
+                    \n\nBitte informieren Sie den Antragsteller.';
+            $messageHTML = '';
+            break;
+        case 3:
+            $subject = 'Antrag auf Zulassung vom Hochschulrat genehmigt';
+            $message = 'Der Antrag auf Zulassung wurde durch '.fullname($USER).' genehmigt.
+                    \n\n
+                    \n\nBitte informieren Sie den Antragsteller über die erfolgreiche Zulassung des Unternehmens!';
+            $messageHTML = '';
+            break;
+        default:
+            return false;
+    }
+
+    return email_to_user($responsibleStudiengangsleiter, $USER, $subject, $message, $messageHTML, ",", false);
+
+}
+
+/**
+ * by Simon Wohlfahrt
+ * @param $applicationID int
+ * @param $status int
+ * @param $reason string
+ */
+function insertApplicationHistoryEntry($applicationID, $status, $reason) {
+    global $User;
+    global $DB;
+
+    $currentDateTime = new DateTime(core_date::get_server_timezone_object());
+
+    $record = new stdClass();
+    $record->user = $User->id;
+    $record->application_id = $applicationID;
+    $record->status = $status;
+    $record->reason = $reason;
+    $record->date = $currentDateTime->getTimestamp();
+
+    // Update status in database
+    try {
+        $DB->insert_record('applicationHistory', $record, false);
+    } catch (Exception $e) {
+        echo $e->getTraceAsString();
+        throw e;
+    }
+}
+
+function insertDefaultApplicationHistoryEntry($applicationID) {
+    global $DB;
+
+    $currentDateTime = new DateTime(core_date::get_server_timezone_object());
+
+    $record = new stdClass();
+    $record->user = 0;
+    $record->application_id = $applicationID;
+    $record->status = 0;
+    $record->reason = null;
+    $record->date = $currentDateTime->getTimestamp();
+
+    // Update status in database
+    try {
+        $DB->insert_record('applicationHistory', $record, false);
+    } catch (Exception $e) {
+        echo $e->getTraceAsString();
+        throw e;
+    }
+}
+
+/**
+ * by Simon Wohlfahrt
+ * @param $userID int
+ * @param $applicationID int
+ * @return bool
+ */
+function isResponsibleStudiengangsleiter($userID, $applicationID) {
+    global $DB;
+
+    try {
+        $responsibleID = $DB->get_field('antraege', 'responsible', array('id'=>$applicationID), $strictness=MUST_EXIST);
+        return $responsibleID == $userID;
+    } catch (Exception $e) {
+        echo $e->getTraceAsString();
+        return false;
+    }
+}
+
+/**
+ * by Simon Wohlfahrt
+ * @param $applicationID int
+ * @return mixed
+ */
+function getResponsibleStudiengangsleiter($applicationID) {
+    global $DB;
+
+    $responsibleStudiengangsleiterID =  $DB->get_field('antraege', 'responsible', array('id'=>$applicationID), $strictness=MUST_EXIST);
+    return $DB->get_record('user', array('id' => $responsibleStudiengangsleiterID));
+}
+
+/**
+ * by Simon Wohlfahrt
+ * @param $userID int
+ * @return bool
+ */
+function isAuthorizedDekan($userID) {
+    //TODO: Database selection with real dekan data
+    $dekans = array(0000000001, 0000000002, 0000000003);
+    return in_array ( $userID , $dekans );
+}
+
+/**
+ * by Simon Wohlfahrt
+ * @param $antrags_id int
+ * @return string
+ */
+function getAuthorizedDekan($antrags_id) {
+    //TODO: Currently no good solution for that!
+
+    //This is not the valid E-Mail Adress!!!
+    return 'hochschulrat@dhbw-mannheim.de';
+}
+
+/**
+ * by Simon Wohlfahrt
+ * @param $userID int
+ * @return bool
+ */
+function isAuthorizedHochschulrat($userID) {
+    //TODO: Database selection with real responsibles data
+    $hochschulrat = array(0000000001, 0000000002, 0000000003);
+    return in_array ( $userID , $hochschulrat );
+}
+
+/**
+ * by Simon Wohlfahrt
+ * @param $antrags_id int
+ * @return string
+ */
+function getAuthorizedHochschulrat($antrags_id) {
+    //TODO: Currently no good solution for that!
+
+    //This is not the valid E-Mail Adress!!!
+    return 'dekan-wi@dhbw-mannheim.de';
+}
+
+/**
+ * original from Quynh Nguyen edited by Simon Wohlfahrt
+ * @return stdClass
+ */
+function getSwimUser() {
+    $from = new stdClass();
+    $from->firstname = 'sWIm15';
+    $from->lastname  = '';
+    $from->email     = 'swim15.noreply@gmail.com';
+    $from->maildisplay = 1;
+
+    return $from;
+}
