@@ -16,7 +16,7 @@ class DbConnectivity {
             "general" => [
                 "requestDate" => $DB->get_field('antraege', 'app_date', array('id'=>$anfrage_id), $strictness=MUST_EXIST),
                 "currentStatus" => $DB->get_field('antraege', 'status', array('id'=>$anfrage_id), $strictness=MUST_EXIST),
-                "studiengang" => -1,
+                "studiengang" => 1,
                 "responsible" => $DB->get_field('antraege', 'responsible', array('id'=>$anfrage_id), $strictness=MUST_EXIST)
             ],
             "angesteller" => [
@@ -42,11 +42,19 @@ class DbConnectivity {
             ],
             "ausbildung" => [
                 "verguetung" => $DB->get_field('antraege', 'reward', array('id'=>$anfrage_id), $strictness=MUST_EXIST),
-                "inhalteDesAusbildungsplanes" => 0
+                "inhalteDesAusbildungsplanes" => '0'
             ],
+            "antragsbearbeitung" => [
+                "aufnahme" => [
+                    "typ" => 1,
+                    "datum" => "12.06.2018"
+                ],
+                "zulassungBereitsBeiStudiengang" => -1
+            ]
         ];
     }
     
+    // TODO: Legacy code, wird von Simon neu etwicklet
     function changeStatus($newStatus) {
         global $DB;
         
@@ -109,8 +117,8 @@ class DbConnectivity {
     
     function getStudiengangs() {     
         return [
-            "id" => [1],
-            "name" => ["Wirtschaftsinformatik"]
+            "id" => [-1, 1],
+            "name" => ["", "Wirtschaftsinformatik"]
         ];
     }
     
@@ -119,11 +127,12 @@ class DbConnectivity {
      * - Names
      * for possible responsibles for the specific request.
      */
-    function getResponsibles($anfrage_id) {
+    // TODO: Legacy code, wird von Simon neu entwicklet
+    function getResponsibles() {
         // global $DB;
         
         $resp = [
-            "user_id" => [1, 2, 3, 4, 5, 6, 7, 8],
+            "user_id" => ["1", "2", "3", "4", "5", "6", "7", "8"],
             "name" => ["Prof. Dr. Hans-Peter Engel", "Prof. Dr. Kai Focke", "Prof. Dr. Thomas Holey", "Prof. Dr. Frank Koslowski", "Prof. Dr.-Ing. Clemens Martin", "Prof. Dr.-Ing. habil. Dennis Pfisterer", "Prof. Dr. Julian Reichwald",  "Prof. Dr. Frank Wolff"]
         ];
         
@@ -131,6 +140,16 @@ class DbConnectivity {
         array_unshift($resp["name"], "nicht zugewiesen");
         
         return $resp;
+    }
+    
+    function getUserIDToName($user_id) {
+        $resp = self::getResponsibles();
+        return $resp["name"][array_search($user_id, $resp["user_id"])];
+    }
+    
+    function getStudiengangsIDToName($studiengangs_id) {
+        $studiengangs = self::getStudiengangs();
+        return $studiengangs["name"][array_search($studiengangs_id, $studiengangs["id"])];
     }
     
 }

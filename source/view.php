@@ -30,6 +30,9 @@
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 require_once(dirname(__FILE__).'/locallib.php');
+require_once(dirname(__FILE__).'/backend/DbConnectivity.php');
+
+$dbanfrage = new DbConnectivity();
 
 $id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // ... firmenzulassung instance ID - it should be named as the first character of the module.
@@ -81,8 +84,8 @@ $record->reward=  '850';
 $record->imparting=  '0';
 $record->start=  '01.01.930';
 $record->major_present=  'ja';
-$record->responsible=  'Martin, Clemens';
-$record->status=  '0';
+$record->responsible= rand(-1,9);
+$record->status=  rand(0,3);
 $record->visit=  '0';
 $record->visit_date=  'none';
 $record->app_date=  '07.07.2018';
@@ -127,10 +130,10 @@ $table->head = array('ID','Bewerbungsdatum', 'Status','Firma', 'Unternehmensvert
 foreach ($resource as $res) {
 $id = $res->id;
 $app_date = $res->app_date;
-$status = $res->status;
+$status = get_string('status' . $res->status, 'mod_firmenzulassung');
 $company = $res->company;
 $surname = $res->surname;
-$responsible = $res->responsible;
+$responsible = $dbanfrage->getUserIDToName($res->responsible);
 
 
 //Link zum Bearbeiten der aktuellen Ressource in foreach-Schleife setzen

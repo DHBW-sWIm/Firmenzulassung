@@ -52,6 +52,9 @@ $string['status'] = 'Status';
 $string['antragsdatum'] = 'Antragsdatum';
 $string['studiengang'] = 'Studiengang';
 
+$string['status-3'] = 'abgelehnt durch Studiengangsleiter';
+$string['status-2'] = 'abgelehnt durch Dekan';
+$string['status-1'] = 'abgelehnt durch Studiengangsleiter';
 $string['status0'] = 'neu';
 $string['status1'] = 'genehmigt durch Studiengangsleiter';
 $string['status2'] = 'genehmigt durch Dekan';
@@ -91,8 +94,8 @@ $string['subtitle3'] = '3. Angaben zur Ausbildung';
 $string['verguetung'] = 'Höhe der Ausbildungsvergütung';
 
 $string['ausbildungsplanInhalte'] = 'Die Inhalte des Ausbildungsplanes werden...';
-$string['internVollVermittelt'] = 'intern voll vermittelt.';
-$string['internTeilVermittelt'] = 'intern nur teilweise vermittelt.';
+$string['vermittelt0'] = 'intern voll vermittelt.';
+$string['vermittelt1'] = 'intern nur teilweise vermittelt.';
 
 $string['ausbildungsplanStud'] = 'Ausbildungsplan für Studierende:';
 
@@ -106,11 +109,9 @@ $string['aufnahme2'] = 'ab dem';
 $string['aufnahme3'] = 'überhaupt nicht.';
 
 $string['zulassungStudiengang'] = 'Eine Zulassung liegt bereits den Studiengang:';
-$string['zulassungOpt1'] = 'nicht zutreffend';
-$string['zulassungOpt2'] = '2';
-$string['zulassungOpt3'] = '3';
-$string['zulassungOpt4'] = '4';
-$string['zulassungOpt5'] = '5';
+$string['zulassungOpt-1'] = 'nicht zutreffend';
+
+$string['kommentar'] = 'Ihre Begründung';
 
 
 /**

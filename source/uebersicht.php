@@ -102,6 +102,7 @@ if ($fromform = $mform->get_data()) {
     }
     
     if (isset($genehmigt)) {
+        //TODO: Simon: hier solltest du dein Code insertieren
         if ($fromform->aufnahme == 1) {
             $aufnahme = [
                 "aufnahme" => $fromform->aufnahme,
