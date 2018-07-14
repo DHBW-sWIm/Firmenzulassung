@@ -1,4 +1,4 @@
-<XMLDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PATH="mod/firmenzulassung/db" VERSION="2018070700"
+<XMLDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PATH="mod/firmenzulassung/db" VERSION="2018071404"
        COMMENT="XMLDB file for Moodle mod/firmenzulassung" xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
     <TABLES>
         <TABLE NAME="firmenzulassung" COMMENT="Default comment for firmenzulassung, please edit me">
@@ -65,7 +65,7 @@
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
                 <FIELD NAME="application_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
-                <FIELD NAME="date" TYPE="datetime" NOTNULL="true" SEQUENCE="false" />
+                <FIELD NAME="date" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
                 <FIELD NAME="user" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
                 <FIELD NAME="status" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false" />
                 <FIELD NAME="reason" TYPE="char" LENGTH="1000" NOTNULL="false" SEQUENCE="false" />

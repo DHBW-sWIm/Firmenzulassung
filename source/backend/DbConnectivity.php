@@ -165,20 +165,25 @@ class DbConnectivity {
         $sql= 'SELECT status FROM {firmenzulassung_status} WHERE id = ? AND date = (SELECT MAX(date) FROM {firmenzulassung_status} WHERE id = ?);';
 
         try {
-            $status = $DB->get_record_sql($sql, array($applicationID, $applicationID));
+            $record = $DB->get_record_sql($sql, array($applicationID, $applicationID));
+
+            if ($record != null)
+                return $record->status;
 
             //TODO: add standard status entry if not exists
             // if application with id $applicationID exists
             // and no history entry is found
             // add default history entry with insertDefaultApplicationHistoryEntry($applicationID);
+            if ($DB->record_exists('antraege', array('id'=>$applicationID)))
+                self::insertDefaultApplicationHistoryEntry($applicationID);
+
+            return 0;
 
         } catch (Exception $e) {
-
+            echo 'MARKER: [ERROR] in function \'getCurrentStatus\' !!!';
             echo $e->getTraceAsString();
             return 0;
         }
-
-        return $status;
     }
 
     /**
@@ -191,7 +196,7 @@ class DbConnectivity {
         global $User;
         global $DB;
 
-        $currentDateTime = new DateTime(core_date::get_server_timezone_object());
+        $currentDateTime = new DateTime("now", core_date::get_server_timezone_object());
 
         $record = new stdClass();
         $record->user = $User->id;
@@ -202,10 +207,10 @@ class DbConnectivity {
 
         // Update status in database
         try {
-            $DB->insert_record('status', $record, false);
+            $DB->insert_record('firmenzulassung_status', $record, false);
         } catch (Exception $e) {
             echo $e->getTraceAsString();
-            throw e;
+            throw $e;
         }
     }
 
@@ -216,7 +221,7 @@ class DbConnectivity {
     function insertDefaultApplicationHistoryEntry($applicationID) {
         global $DB;
 
-        $currentDateTime = new DateTime(core_date::get_server_timezone_object());
+        $currentDateTime = new DateTime("now", core_date::get_server_timezone_object());
 
         $record = new stdClass();
         $record->user = 0;
@@ -227,10 +232,10 @@ class DbConnectivity {
 
         // Update status in database
         try {
-            $DB->insert_record('status', $record, false);
+            $DB->insert_record('firmenzulassung_status', $record, false);
         } catch (Exception $e) {
             echo $e->getTraceAsString();
-            throw e;
+            throw $e;
         }
     }
 }

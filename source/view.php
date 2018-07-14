@@ -85,15 +85,18 @@ $record->imparting=  '0';
 $record->start=  '01.01.930';
 $record->major_present=  'ja';
 $record->responsible= rand(-1,9);
-$record->status=  rand(0,3);
+//$record->status=  rand(0,3);
 $record->visit=  '0';
 $record->visit_date=  'none';
 $record->app_date=  '07.07.2018';
 
 
-$DB->insert_record('antraege', $record, $returnid=false, $bulk=false);
+$applicationID = $DB->insert_record('antraege', $record, $returnid=false, $bulk=false);
 
 
+echo 'MARKER: [INFO] $applicationID = \''.$applicationID.'\'.';
+
+$dbanfrage->insertDefaultApplicationHistoryEntry($applicationID);
 
 
 /* PAGE belegen*/
@@ -130,7 +133,12 @@ $table->head = array('ID','Bewerbungsdatum', 'Status','Firma', 'Unternehmensvert
 foreach ($resource as $res) {
 $id = $res->id;
 $app_date = $res->app_date;
-$status = get_string('status' . $res->status, 'mod_firmenzulassung');
+//$status = get_string('status' . $res->status, 'mod_firmenzulassung');
+
+$currentStatus = $dbanfrage->getCurrentStatus($id);
+//echo 'MARKER: [INFO] $currentStatus = \''.$currentStatus.'\'.';
+
+$status = get_string('status'.$currentStatus, 'mod_firmenzulassung');
 $company = $res->company;
 $surname = $res->surname;
 $responsible = $dbanfrage->getUserIDToName($res->responsible);
