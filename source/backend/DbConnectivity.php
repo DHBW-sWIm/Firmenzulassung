@@ -158,7 +158,7 @@ class DbConnectivity {
      * @param $applicationID
      * @return int
      */
-    static function getCurrentStatus($applicationID) {
+    function getCurrentStatus($applicationID) {
         global $DB;
 
         // Select the latest history entry (status change) for a specific applicationID.
@@ -187,7 +187,7 @@ class DbConnectivity {
      * @param $status int
      * @param $reason string
      */
-    static function insertApplicationHistoryEntry($applicationID, $status, $reason) {
+    function insertApplicationHistoryEntry($applicationID, $status, $reason) {
         global $User;
         global $DB;
 
@@ -213,7 +213,7 @@ class DbConnectivity {
      * by Simon Wohlfahrt
      * @param $applicationID
      */
-    static function insertDefaultApplicationHistoryEntry($applicationID) {
+    function insertDefaultApplicationHistoryEntry($applicationID) {
         global $DB;
 
         $currentDateTime = new DateTime(core_date::get_server_timezone_object());
