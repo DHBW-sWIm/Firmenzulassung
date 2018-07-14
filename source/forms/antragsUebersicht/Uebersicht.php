@@ -31,6 +31,7 @@ class Uebersicht extends moodleform {
          */
         
         if (isset($change_responsible) || isset($edit_mode)) {
+
             $mform->addElement('select', 'responsible', get_string('responsible', 'mod_firmenzulassung'),
                 $dbConnectivity->getResponsibles()['name'],
                 $dbConnectivity->getResponsibles()['user_id']);
@@ -213,18 +214,20 @@ class Uebersicht extends moodleform {
             $mform->addElement('textarea', 'comment', get_string('kommentar', 'mod_firmenzulassung'), 'rows="10" cols="50"');
             
             $mainButons[] =& $mform->createElement('submit', 'genehmigen', get_string('genehmigen', 'mod_firmenzulassung'));
-            $mainButons[] =& $mform->createElement('submit', 'ablehen', get_string('ablehen', 'mod_firmenzulassung'));
+            $mainButons[] =& $mform->createElement('submit', 'ablehnen', get_string('ablehnen', 'mod_firmenzulassung'));
+
+            $mform->disabledIf('genehmigen', 'besichtigt');
         }
         
         $mainButons[] =& $mform->createElement('html', '<div class="form-group fitem"><button onclick="window.print()" style="background: url(icons/printIcon.png); background-repeat: no-repeat; background-size: 100%; border: none; height: 33px; width: 33px;"/></div>');
         $mform->addGroup($mainButons, 'mainBtns', '', array(' '), false);
         
-        
-        
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
-        
-        
+
+        $mform->addElement('hidden', 'anfrageid');
+        $mform->setType('anfrageid', PARAM_INT);
+
         $mform->closeHeaderBefore('mainBtns');
         
         $mform->setExpanded('angabenZumAntragstellerAlsUnternehmen', true);
@@ -232,7 +235,6 @@ class Uebersicht extends moodleform {
         $mform->setExpanded('angabenZurAusbildung', true);
         $mform->setExpanded('antragsbearbeitung', true);
         $mform->setExpanded('zulassungsprozess', true);
-        
     }
     
     //Custom validation should be added here

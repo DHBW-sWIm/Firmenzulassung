@@ -128,7 +128,7 @@ $string['besichtigt'] = 'Das Unternehmen wurde von verantwortliche Studiengangsl
 $string['datumUNBes'] = 'Datum der Unternehmenbesichtigung';
 
 $string['genehmigen'] = 'Genehmigen';
-$string['ablehen'] = 'Ablehen';
+$string['ablehnen'] = 'Ablehnen';
 $string['drucken'] = 'Drucken';
 $string['download'] = 'Download';
 

@@ -91,10 +91,9 @@ $record->visit_date=  'none';
 $record->app_date=  '07.07.2018';
 
 
-$applicationID = $DB->insert_record('antraege', $record, $returnid=false, $bulk=false);
+$applicationID = $DB->insert_record('antraege', $record, $returnid=true, $bulk=false);
 
-
-echo 'MARKER: [INFO] $applicationID = \''.$applicationID.'\'.';
+//echo 'MARKER: [INFO] $applicationID = \''.$applicationID.'\'.';
 
 $dbanfrage->insertDefaultApplicationHistoryEntry($applicationID);
 
@@ -131,27 +130,28 @@ $table->head = array('ID','Bewerbungsdatum', 'Status','Firma', 'Unternehmensvert
 
 //Für jeden Datensatz
 foreach ($resource as $res) {
-$id = $res->id;
-$app_date = $res->app_date;
+    $id = $res->id;
+    $app_date = $res->app_date;
 //$status = get_string('status' . $res->status, 'mod_firmenzulassung');
 
-$currentStatus = $dbanfrage->getCurrentStatus($id);
-//echo 'MARKER: [INFO] $currentStatus = \''.$currentStatus.'\'.';
+    $currentStatus = $dbanfrage->getCurrentStatus($id);
 
-$status = get_string('status'.$currentStatus, 'mod_firmenzulassung');
-$company = $res->company;
-$surname = $res->surname;
-$responsible = $dbanfrage->getUserIDToName($res->responsible);
+    echo 'MARKER: [INFO] Application '.$res->id.' with $currentStatus = \''.$currentStatus.'\'.';
+
+    $status = get_string('status'.$currentStatus, 'mod_firmenzulassung');
+    $company = $res->company;
+    $surname = $res->surname;
+    $responsible = $dbanfrage->getUserIDToName($res->responsible);
 
 
-//Link zum Bearbeiten der aktuellen Ressource in foreach-Schleife setzen
-$htmlLink = html_writer::link(new moodle_url('../firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $res->id)), 'Edit', $attributes=null);
-//Analog: Link zum Löschen...
-$htmlLinkDelete = html_writer::link(new moodle_url('../firmenzulassung/delete.php', array('id' => $cm->id, 'anfrageid' => $res->id)), 'Delete', $attributes=null);
-//Analog: Link Vertreter Bearbeiten...
-$htmlLinkResponsible = html_writer::link(new moodle_url('../firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $res->id, 'changeResp' => 1)), 'Vertreter wählen', $attributes=null);
-//Daten zuweisen an HTML-Tabelle
-$table->data[] = array($id, $app_date, $status, $company, $surname, $responsible, $htmlLink, $htmlLinkDelete, $htmlLinkResponsible);
+    //Link zum Bearbeiten der aktuellen Ressource in foreach-Schleife setzen
+    $htmlLink = html_writer::link(new moodle_url('../firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $res->id)), 'Edit', $attributes = null);
+    //Analog: Link zum Löschen...
+    $htmlLinkDelete = html_writer::link(new moodle_url('../firmenzulassung/delete.php', array('id' => $cm->id, 'anfrageid' => $res->id)), 'Delete', $attributes = null);
+    //Analog: Link Vertreter Bearbeiten...
+    $htmlLinkResponsible = html_writer::link(new moodle_url('../firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $res->id, 'changeResp' => 1)), 'Vertreter wählen', $attributes = null);
+    //Daten zuweisen an HTML-Tabelle
+    $table->data[] = array($id, $app_date, $status, $company, $surname, $responsible, $htmlLink, $htmlLinkDelete, $htmlLinkResponsible);
 }
 //Tabelle ausgeben
 echo html_writer::table($table);

@@ -193,13 +193,13 @@ class DbConnectivity {
      * @param $reason string
      */
     function insertApplicationHistoryEntry($applicationID, $status, $reason) {
-        global $User;
+        global $USER;
         global $DB;
 
         $currentDateTime = new DateTime("now", core_date::get_server_timezone_object());
 
         $record = new stdClass();
-        $record->user = $User->id;
+        $record->user = $USER->id;
         $record->application_id = $applicationID;
         $record->status = $status;
         $record->reason = $reason;
