@@ -96,50 +96,38 @@ $dbConnectivity = new DbConnectivity();
 if ($fromform = $mform->get_data()) {
     
     if (!empty($fromform->genehmigen)) {
-        $genehmigt = 1;
+        $genehmigt = true;
     } elseif (!empty($fromform->ablehen)) {
-        $genehmigt = 0;
+        $genehmigt = false;
     }
-    
-    if (isset($genehmigt)) {
-        if ($fromform->aufnahme == 1) {
-            $aufnahme = [
-                "aufnahme" => $fromform->aufnahme,
-                "datum" => $fromform->inhaltOpt2DS
-            ];
-        } else {
-            $aufnahme = [
-                "aufnahme" => $fromform->aufnahme,
-                "datum" => NULL
-            ];
-        }
-        
-        if (isset($fromform->besichtigt)) {
-            $besichtigung = $fromform->datumUNehmenBes;
-        } else {
-            $besichtigung = NULL;
-        }
-        
-        $dbConnectivity->changeStatus([
-            "genehmigt" => $genehmigt,
-            "generell" => [
-                "verantwortlicher" => $fromform->responsible,
-                "studiengang" => $fromform->studiengang
-            ],
-            "antragsbearbeitung" => [
-                "aufnahme" => $aufnahme
-            ],
-            "zulassungprozess" => [
-                "besichtigung" => $besichtigung
-            ]
-        ]);
-        
-        $PAGE->set_url('/mod/firmenzulassung/view.php', array('id' => $cm->id));
+
+    //TODO: Save changes (Besichtigungstermin etc.)
+    //...
+
+    //TODO: Testing
+    if ($genehmigt && !isset($fromform->besichtigt)) {
+        //approval is only allowed if the Studiengangsleiter has visited the company
+        //TODO: Error Message goes here 'Der Antrag kann erst nach einem Besuch beim Unternehmen genehmigt werden!'
+        error_log('Der Antrag kann erst nach einem Besuch beim Unternehmen genehmigt werden!');
+
     } else {
-        $PAGE->set_url('/mod/firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $_GET['anfrageid']));
+
+        try {
+            // the magic trick to update the application status and check if user is allowed to perfom this action
+            processApplication($_GET['anfrageid'], $genehmigt, $fromform->comment);
+
+        } catch (Exception $e) {
+            error_log($e->getTraceAsString());
+
+            //TODO: Handle error messages...
+            // The exception message should be visible for the user
+        }
+
     }
-    
-    
+    //$PAGE->set_url('/mod/firmenzulassung/view.php', array('id' => $cm->id));
+    $PAGE->set_url('/mod/firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $_GET['anfrageid']));
+
+
     //$value1 = $fromform->email;
     //$value2 = $fromform->name;
 
@@ -180,3 +168,39 @@ if ($fromform = $mform->get_data()) {
 
 // Finish the page.
 echo $OUTPUT->footer();
+
+/*
+function saveChanges() {
+    if ($fromform->aufnahme == 1) {
+        $aufnahme = [
+            "aufnahme" => $fromform->aufnahme,
+            "datum" => $fromform->inhaltOpt2DS
+        ];
+    } else {
+        $aufnahme = [
+            "aufnahme" => $fromform->aufnahme,
+            "datum" => NULL
+        ];
+    }
+
+    if (isset($fromform->besichtigt)) {
+        $besichtigung = $fromform->datumUNehmenBes;
+    } else {
+        $besichtigung = NULL;
+    }
+
+    $dbConnectivity->changeStatus([
+        "genehmigt" => $genehmigt,
+        "generell" => [
+            "verantwortlicher" => $fromform->responsible,
+            "studiengang" => $fromform->studiengang
+        ],
+        "antragsbearbeitung" => [
+            "aufnahme" => $aufnahme
+        ],
+        "zulassungprozess" => [
+            "besichtigung" => $besichtigung
+        ]
+    ]);
+}
+*/
