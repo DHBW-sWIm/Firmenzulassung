@@ -115,6 +115,7 @@ if ($fromform = $mform->get_data()) {
 
         try {
             // the magic trick to update the application status and check if user is allowed to perfom this action
+            saveChanges($fromform);
             processApplication($anfrageid, $genehmigt, $fromform->comment);
 
         } catch (Exception $e) {
@@ -171,45 +172,27 @@ if ($fromform = $mform->get_data()) {
     $mform->set_data($formdata);
     //displays the form
     $mform->display();
-
-    error_log("TEST FROM AFTER DISPLAY");
 }
 
 // Finish the page.
 echo $OUTPUT->footer();
 
-/*
-function saveChanges() {
-    if ($fromform->aufnahme == 1) {
-        $aufnahme = [
-            "aufnahme" => $fromform->aufnahme,
-            "datum" => $fromform->inhaltOpt2DS
-        ];
-    } else {
-        $aufnahme = [
-            "aufnahme" => $fromform->aufnahme,
-            "datum" => NULL
-        ];
+
+/**
+ * by Simon Wohlfahrt
+ * @param $fromform
+ * @throws Exception
+ */
+function saveChanges($fromform) {
+    $dbConnectivity = new DbConnectivity();
+
+    $application = new stdClass();
+    $application->id = optional_param('anfrageid', 0, PARAM_INT);
+
+    if (isset($fromform->besichtigt) && $fromform->besichtigt == 1) {
+        $application->isVisited = $fromform->besichtigt;
+        $application->visit_date = $fromform->datumUNehmenBes;
     }
 
-    if (isset($fromform->besichtigt)) {
-        $besichtigung = $fromform->datumUNehmenBes;
-    } else {
-        $besichtigung = NULL;
-    }
-
-    $dbConnectivity->changeStatus([
-        "genehmigt" => $genehmigt,
-        "generell" => [
-            "verantwortlicher" => $fromform->responsible,
-            "studiengang" => $fromform->studiengang
-        ],
-        "antragsbearbeitung" => [
-            "aufnahme" => $aufnahme
-        ],
-        "zulassungprozess" => [
-            "besichtigung" => $besichtigung
-        ]
-    ]);
+    $dbConnectivity->updateApplication($application);
 }
-*/

@@ -32,6 +32,7 @@
                 <FIELD NAME="surname" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="company" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="phone" TYPE="int" LENGTH="15" NOTNULL="false" SEQUENCE="false"/>
+                <FIELD NAME="studiengang" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="email" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="major_request" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="fax" TYPE="int" LENGTH="15" NOTNULL="false" SEQUENCE="false"/>
@@ -47,12 +48,13 @@
                 <FIELD NAME="chamber_name" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="chamber_city" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="reward" TYPE="int" LENGTH="5" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="imparting" TYPE="int" LENGTH="2" NOTNULL="false" SEQUENCE="false"/>
+                <FIELD NAME="imparting" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="start" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="major_present" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="responsible" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
-                <!--<FIELD NAME="status" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false"/>-->
-                <FIELD NAME="visit" TYPE="int" LENGTH="2" NOTNULL="false" SEQUENCE="false"/>
+                <FIELD NAME="is_visited" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false"/>
+                <FIELD NAME="firmenliste_aufnahme" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false"/>
+                <FIELD NAME="firmenliste_aufnahme_date" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="visit_date" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="app_date" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
             </FIELDS>

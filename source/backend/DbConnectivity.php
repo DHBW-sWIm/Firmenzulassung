@@ -8,7 +8,12 @@
  */
 
 class DbConnectivity {
-    
+
+
+    /**
+     * @param $anfrage_id
+     * @return array
+     */
     function getMetaData($anfrage_id) {
         global $DB;
         
@@ -18,7 +23,7 @@ class DbConnectivity {
                 //"currentStatus" => $DB->get_field('antraege', 'status', array('id'=>$anfrage_id), $strictness=MUST_EXIST),
                 //TODO: Testing (implemented by Simon Wohlfahrt)
                 "currentStatus" => self::getCurrentStatus($anfrage_id),
-                "studiengang" => 1,
+                "studiengang" => $DB->get_field('antraege', 'studiengang', array('id'=>$anfrage_id), $strictness=IGNORE_MISSING),
                 "responsible" => $DB->get_field('antraege', 'responsible', array('id'=>$anfrage_id), $strictness=MUST_EXIST)
             ],
             "angesteller" => [
@@ -48,12 +53,45 @@ class DbConnectivity {
             ],
             "antragsbearbeitung" => [
                 "aufnahme" => [
-                    "typ" => 1,
-                    "datum" => "12.06.2018"
+                    "typ" => $DB->get_field('antraege', 'firmenliste_aufnahme', array('id'=>$anfrage_id), $strictness=IGNORE_MISSING),
+                    "datum" => $DB->get_field('antraege', 'firmenliste_aufnahme_date', array('id'=>$anfrage_id), $strictness=IGNORE_MISSING)
                 ],
-                "zulassungBereitsBeiStudiengang" => -1
+                "zulassungBereitsBeiStudiengang" => -1,
+                "is_visited" => $DB->get_field('antraege', 'is_visited', array('id'=>$anfrage_id), $strictness=MUST_EXIST)
             ]
         ];
+    }
+
+
+    /**
+     * by Simon Wohlfahrt
+     * @param $applicationID
+     * @return mixed
+     */
+    function getApplicationEntry($applicationID) {
+        global $DB;
+
+        return $DB->get_record('antraege', array('id'=>$applicationID), MUST_EXIST);
+    }
+
+    /**
+     * by Simon Wohlfahrt
+     * @param $applicationID
+     * @return string
+     */
+    function getHistoryAsFormattedString($applicationID) {
+        global $DB;
+
+        $records = $DB->get_records('firmenzulassung_status', array('id'=>$applicationID));
+        //TODO: order by date
+
+        $string = '';
+        foreach ($records As $entry) {
+            //TODO: format correcty
+            $string = $string . $entry->user . ' am ' . $entry->date . '\n mit folgender Begründung: ' . $entry->reason . '\n\n';
+        }
+
+        return $string;
     }
     
     // TODO: Legacy code, wird von Simon neu etwicklet
@@ -154,7 +192,23 @@ class DbConnectivity {
         return $studiengangs["name"][array_search($studiengangs_id, $studiengangs["id"])];
     }
 
+
     /**
+     * by Simon Wohlfahrt
+     * @param $application stdClass()
+     */
+    function updateApplication($application) {
+        global $DB;
+
+        if (!$DB->exists($application->id)) {
+            throw new Exception('The application with ID '.$application->id.' does not exist!');
+        }
+
+        $DB->update_record('firmenzulassung_status', $application, $bulk=false);
+    }
+
+    /**
+     * by Simon Wohlfahrt
      * @param $applicationID
      * @return int
      */
@@ -162,7 +216,7 @@ class DbConnectivity {
         global $DB;
 
         // Select the latest history entry (status change) for a specific applicationID.
-        $sql= 'SELECT status FROM {firmenzulassung_status} WHERE id = ? AND date = (SELECT MAX(date) FROM {firmenzulassung_status} WHERE id = ?);';
+        $sql= 'SELECT status FROM {firmenzulassung_status} WHERE application_id = ? AND date = (SELECT MAX(date) FROM {firmenzulassung_status} WHERE application_id = ?);';
 
         try {
             $record = $DB->get_record_sql($sql, array($applicationID, $applicationID));

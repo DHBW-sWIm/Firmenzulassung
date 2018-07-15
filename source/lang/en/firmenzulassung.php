@@ -119,6 +119,7 @@ $string['kommentar'] = 'Ihre Begründung';
  */
 $string['subtitleFinal'] = 'Zulassungsprozess';
 
+$string['abgelehntDurch'] = 'abgelehnt durch';
 $string['zulassung0'] = 'Studiengangsleiter';
 $string['zulassung1'] = 'Dekan';
 $string['zulassung2'] = 'Rektorat';
@@ -135,4 +136,6 @@ $string['download'] = 'Download';
 $string['speichern'] = 'Speichern';
 
 $string['maincategory'] ='maincategory';
+
+$string['history'] = 'Verlauf der Antragsbearbeitung';
 
