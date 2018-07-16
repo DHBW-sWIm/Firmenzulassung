@@ -590,15 +590,8 @@ function emailRejectionToCompanyRepresentive($applicationID, $reason) {
 function isResponsibleStudiengangsleiter($userID, $applicationID) {
     global $DB;
 
-    //TODO: globalize admin user or use different check for testing purpose!
-    $adminUserID = 2;
-    if ($userID == $adminUserID)
-        return true;
-
     try {
-
         //echo 'MARKER: [INFO] $USER->id = '.$userID.'.';
-
         $responsibleID = $DB->get_field('firmenzulassung_antraege', 'responsible', array('id'=>$applicationID), MUST_EXIST);
         return $responsibleID == $userID;
     } catch (Exception $e) {

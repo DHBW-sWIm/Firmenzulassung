@@ -86,16 +86,17 @@ class Uebersicht extends moodleform {
 
         self::displayProgress($mform, $application->id);
 
+        $mform->addElement('checkbox', 'besichtigt', get_string('besichtigt', 'mod_firmenzulassung'));
+        $mform->setDefault('besichtigt', $application->is_visited);
+
         switch ($action) {
             case 'view':
-                if ($application->is_visited == false) {
-                    $mform->addElement('checkbox', 'besichtigt', get_string('besichtigt', 'mod_firmenzulassung'));
-                } else {
-                    $mform->addElement('static', 'besichtigt', get_string('besichtigung', 'mod_firmenzulassung'), get_string('besichtigt', 'mod_firmenzulassung'));
+                if ($application->is_visited == true) {
+                    $mform->disabledIf('besichtigt', 'anfrageid', 'eq', $application->id);
                 }
                 break;
             case 'selectResponsible':
-                $mform->addElement('static', 'besichtigt', get_string('besichtigung', 'mod_firmenzulassung'), get_string('besichtigt', 'mod_firmenzulassung'));
+                $mform->disabledIf('besichtigt', 'anfrageid', 'eq', $application->id);
                 break;
         }
 
@@ -362,7 +363,6 @@ class Uebersicht extends moodleform {
                 // Radio buttons for Inhalte des Ausbildungsplanes.
                 // Alone stading radio buttons must be in group as well, otherwise gets misaligned
                 // due to opt2, where a date selector is next to the option.
-
 
                 $mform->addGroup([$mform->createElement('radio', 'aufnahme', '', get_string('aufnahme1', 'mod_firmenzulassung'), 0)],
                     'aufnahmeG1', '', array(' '), false);
