@@ -115,7 +115,7 @@ if ($fromform = $mform->get_data()) {
 
         try {
             // the magic trick to update the application status and check if user is allowed to perfom this action
-            saveChanges($fromform);
+            saveChanges($fromform, $anfrageid);
             processApplication($anfrageid, $genehmigt, $fromform->comment);
 
         } catch (Exception $e) {
@@ -183,14 +183,14 @@ echo $OUTPUT->footer();
  * @param $fromform
  * @throws Exception
  */
-function saveChanges($fromform) {
+function saveChanges($fromform, $application_id) {
     $dbConnectivity = new DbConnectivity();
 
-    $application = new stdClass();
-    $application->id = optional_param('anfrageid', 0, PARAM_INT);
+    $application = $dbConnectivity->getApplicationEntry($application_id);
+    $application->id = $application_id;
 
     if (isset($fromform->besichtigt) && $fromform->besichtigt == 1) {
-        $application->isVisited = $fromform->besichtigt;
+        $application->is_visited = $fromform->besichtigt;
         $application->visit_date = $fromform->datumUNehmenBes;
     }
 

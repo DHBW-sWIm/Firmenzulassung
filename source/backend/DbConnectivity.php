@@ -71,9 +71,17 @@ class DbConnectivity {
     function getApplicationEntry($applicationID) {
         global $DB;
 
-        return $DB->get_record('firmenzulassung_antraege', array('id'=>$applicationID), MUST_EXIST);
+        return $DB->get_record('firmenzulassung_antraege', array('id'=>$applicationID), $fields='*', MUST_EXIST);
     }
 
+    function deleteApplication($applicationID) {
+        global $DB;
+
+        $DB->delete_records('firmenzulassung_antraege', array('id'=>$applicationID));
+        $DB->delete_records('firmenzulassung_status', array('application_id'=>$applicationID));
+    }
+    
+    
     /**
      * by Simon Wohlfahrt
      * @param $applicationID
@@ -82,16 +90,31 @@ class DbConnectivity {
     function getHistoryAsFormattedString($applicationID) {
         global $DB;
 
-        $records = $DB->get_records('firmenzulassung_status', array('id'=>$applicationID));
+        $records = $DB->get_records('firmenzulassung_status', array('application_id'=>$applicationID));
         //TODO: order by date
+
+        //echo 'Generierung des Zulassungsprozessverlaufs...';
+        //print_object($records);
 
         $string = '';
         foreach ($records As $entry) {
-            //TODO: format correcty
-            $string = $string . $entry->user . ' am ' . $entry->date . '\n mit folgender Begründung: ' . $entry->reason . '\n\n';
+
+            if ($entry->status == 0)
+                continue;
+
+            $string = $string . '<b> Der Antrag wurde am ' . userdate($entry->date) . ' ' . get_string('status' . $entry->status, 'mod_firmenzulassung') . ' ' . $DB->get_field('user', 'username', array ('id'=>$entry->user), $strictness=IGNORE_MISSING) . '</b>';
+
+            //TODO: format user name output, date and maybe some bold text for fancyness
+            if (strlen($entry->reason) > 0) {
+                $string = $string . '<b> mit folgender Begründung:</b><br />' . $entry->reason;
+            } else {
+                $string = $string . '<b> ohne Begründung.</b>';
+            }
+
+            $string = $string . '<br /><br />';
         }
 
-        return $string;
+        return nl2br($string);
     }
     
     // TODO: Legacy code, wird von Simon neu etwicklet
@@ -200,11 +223,11 @@ class DbConnectivity {
     function updateApplication($application) {
         global $DB;
 
-        if (!$DB->exists($application->id)) {
+        if (!$DB->record_exists('firmenzulassung_antraege', array('id'=>$application->id))) {
             throw new Exception('The application with ID '.$application->id.' does not exist!');
         }
 
-        $DB->update_record('firmenzulassung_status', $application, $bulk=false);
+        $DB->update_record('firmenzulassung_antraege', $application, $bulk=false);
     }
 
     /**

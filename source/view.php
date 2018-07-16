@@ -92,7 +92,7 @@ $record->firmenliste_aufnahme = 0;
 $record->firmenliste_aufnahme_date = null;
 
 
-$applicationID = $DB->insert_record('antraege', $record, $returnid=true, $bulk=false);
+$applicationID = $DB->insert_record('firmenzulassung_antraege', $record, $returnid=true, $bulk=false);
 
 //echo 'MARKER: [INFO] $applicationID = \''.$applicationID.'\'.';
 
@@ -124,7 +124,8 @@ echo $OUTPUT->heading($strName);
 
 $attributes = array();
 
-//TODO: remove in productivity
+/*
+//TO-DO: remove in productivity
 $tableTest = new html_table();
 $tableTest->head = array('Entry ID','Application ID', 'Status','Date', 'User', 'Reason');
 
@@ -143,10 +144,10 @@ foreach ($statusTableEntries as $entry) {
     $tableTest->data[] = array($id, $app_id, $status, $date, $user, $reason);
 }
 echo html_writer::table($tableTest);
-
+*/
 
 // Alle Datensätze aus der DB-Tabelle >>antrag<< abfragen.
-$resource = $DB->get_records('antraege');
+$resource = $DB->get_records('firmenzulassung_antraege');
 
 $table = new html_table();
 $table->head = array('ID','Bewerbungsdatum', 'Status','Firma', 'Unternehmensvertreter', 'Verantwortlicher', 'Edit', 'Delete', 'Vertreter wählen');

@@ -399,7 +399,7 @@ function processApplicationByStudiengangsleiter($applicationID, $isApproved, $re
 
             // Email to next process instance (Dekan)
             $email = getAuthorizedDekan($applicationID);
-            $name = $DB->get_field('antraege', 'company', array('id' => $applicationID), MUST_EXIST);
+            $name = $DB->get_field('firmenzulassung_antraege', 'company', array('id' => $applicationID), MUST_EXIST);
             $subject = 'neuer Antrag auf Zulassung zur Bearbeitung';
             $message = 'Ein Antrag auf Zulassung wurde durch ' . fullname($USER) . ' genehmigt.
                     \n\nBitte fahren Sie mit der Bearbeitung des Antrags fort.';
@@ -451,7 +451,7 @@ function processApplicationByDekan($applicationID, $isApproved, $reason)
             // Send mail/notification to next responsible user if update was successful
             // Email to next process instance (Hochschulrat)
             $email = getAuthorizedHochschulrat($applicationID);
-            $name = $DB->get_field('antraege', 'company', array('id' => $applicationID), MUST_EXIST);
+            $name = $DB->get_field('firmenzulassung_antraege', 'company', array('id' => $applicationID), MUST_EXIST);
             $subject = 'neuer Antrag auf Zulassung zur Bearbeitung';
             $message = 'Ein Antrag auf Zulassung wurde durch '.fullname($USER).' genehmigt.
                     \n\nBitte fahren Sie mit der Bearbeitung des Antrags fort.';
@@ -492,7 +492,7 @@ function processApplicationByHochschulrat($applicationID, $isApproved, $reason) 
     $dbConnectivity = new DbConnectivity();
     $currentUserID = &$USER->id;
 
-    if (!isDekan($currentUserID)) {
+    if (!isAuthorizedDekan($currentUserID)) {
         throw new Exception("You are not allowed to perform this task!");
     }
 
@@ -569,8 +569,8 @@ function emailRejectionToCompanyRepresentive($applicationID, $reason) {
     global $DB;
     global $USER;
 
-    $email = $DB->get_field('antraege', 'email', array('id' => $applicationID), MUST_EXIST);
-    $name = $DB->get_field('antraege', 'company', array('id' => $applicationID), MUST_EXIST);
+    $email = $DB->get_field('firmenzulassung_antraege', 'email', array('id' => $applicationID), MUST_EXIST);
+    $name = $DB->get_field('firmenzulassung_antraege', 'company', array('id' => $applicationID), MUST_EXIST);
     $subject = 'Ihr Antrag wurde leider abgelehnt';
     $message = 'Sehr geehrte Damen und Herren von ' . $name . ',
                     \nwir haben Ihren Antrag auf Zulassung an der DHBW mit folgender Begründung abgelehnt:
@@ -599,7 +599,7 @@ function isResponsibleStudiengangsleiter($userID, $applicationID) {
 
         echo 'MARKER: [INFO] $USER->id = '.$userID.'.';
 
-        $responsibleID = $DB->get_field('antraege', 'responsible', array('id'=>$applicationID), MUST_EXIST);
+        $responsibleID = $DB->get_field('firmenzulassung_antraege', 'responsible', array('id'=>$applicationID), MUST_EXIST);
         return $responsibleID == $userID;
     } catch (Exception $e) {
         echo $e->getMessage().' at line '.$e->getLine();
@@ -616,7 +616,7 @@ function isResponsibleStudiengangsleiter($userID, $applicationID) {
 function getResponsibleStudiengangsleiter($applicationID) {
     global $DB;
 
-    $responsibleStudiengangsleiterID =  $DB->get_field('antraege', 'responsible', array('id'=>$applicationID), MUST_EXIST);
+    $responsibleStudiengangsleiterID =  $DB->get_field('firmenzulassung_antraege', 'responsible', array('id'=>$applicationID), MUST_EXIST);
     return $DB->get_record('user', array('id' => $responsibleStudiengangsleiterID));
 }
 
