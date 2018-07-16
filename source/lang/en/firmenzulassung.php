@@ -104,6 +104,7 @@ $string['ausbildungsplanStud'] = 'Ausbildungsplan für Studierende:';
  */
 $string['subtitle4'] = '4. Antrasbearbeitung';
 $string['aufnahmeText'] = 'Wir bitten um Aufnahme in die Firmenliste für Studienbewerber:';
+$string['aufnahme0'] = 'nicht angegeben';
 $string['aufnahme1'] = 'sofort nach Zulassung.';
 $string['aufnahme2'] = 'ab dem';
 $string['aufnahme3'] = 'überhaupt nicht.';
@@ -119,20 +120,25 @@ $string['kommentar'] = 'Ihre Begründung';
  */
 $string['subtitleFinal'] = 'Zulassungsprozess';
 
+$string['abgelehntDurch'] = 'abgelehnt durch';
 $string['zulassung0'] = 'Studiengangsleiter';
 $string['zulassung1'] = 'Dekan';
 $string['zulassung2'] = 'Rektorat';
 $string['zulassung3'] = 'Abschluss';
 
-$string['besichtigt'] = 'Das Unternehmen wurde von verantwortliche Studiengangsleiter besichtigt.';
+$string['besichtigung'] = 'Besichtigung';
+
+$string['besichtigt'] = 'Das Unternehmen wurde vom verantwortlichen Studiengangsleiter besichtigt.';
 $string['datumUNBes'] = 'Datum der Unternehmenbesichtigung';
 
 $string['genehmigen'] = 'Genehmigen';
-$string['ablehen'] = 'Ablehen';
+$string['ablehnen'] = 'Ablehnen';
 $string['drucken'] = 'Drucken';
 $string['download'] = 'Download';
 
 $string['speichern'] = 'Speichern';
 
 $string['maincategory'] ='maincategory';
+
+$string['history'] = 'Verlauf der Antragsbearbeitung';
 

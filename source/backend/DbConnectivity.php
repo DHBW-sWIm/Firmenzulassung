@@ -8,7 +8,12 @@
  */
 
 class DbConnectivity {
-    
+
+
+    /**
+     * @param $anfrage_id
+     * @return array
+     */
     function getMetaData($anfrage_id) {
         global $DB;
         
@@ -17,8 +22,8 @@ class DbConnectivity {
                 "requestDate" => $DB->get_field('firmenzulassung_antraege', 'app_date', array('id'=>$anfrage_id), $strictness=MUST_EXIST),
                 //"currentStatus" => $DB->get_field('firmenzulassung_antraege', 'status', array('id'=>$anfrage_id), $strictness=MUST_EXIST),
                 //TODO: Testing (implemented by Simon Wohlfahrt)
-                "currentStatus" => getCurrentStatus($anfrage_id),
-                "studiengang" => 1,
+                "currentStatus" => self::getCurrentStatus($anfrage_id),
+                "studiengang" => $DB->get_field('firmenzulassung_antraege', 'studiengang', array('id'=>$anfrage_id), $strictness=IGNORE_MISSING),
                 "responsible" => $DB->get_field('firmenzulassung_antraege', 'responsible', array('id'=>$anfrage_id), $strictness=MUST_EXIST)
             ],
             "angesteller" => [
@@ -48,12 +53,68 @@ class DbConnectivity {
             ],
             "antragsbearbeitung" => [
                 "aufnahme" => [
-                    "typ" => 1,
-                    "datum" => "12.06.2018"
+                    "typ" => $DB->get_field('firmenzulassung_antraege', 'firmenliste_aufnahme', array('id'=>$anfrage_id), $strictness=IGNORE_MISSING),
+                    "datum" => $DB->get_field('firmenzulassung_antraege', 'firmenliste_aufnahme_date', array('id'=>$anfrage_id), $strictness=IGNORE_MISSING)
                 ],
-                "zulassungBereitsBeiStudiengang" => -1
+                "zulassungBereitsBeiStudiengang" => -1,
+                "is_visited" => $DB->get_field('firmenzulassung_antraege', 'is_visited', array('id'=>$anfrage_id), $strictness=MUST_EXIST)
             ]
         ];
+    }
+
+
+    /**
+     * by Simon Wohlfahrt
+     * @param $applicationID
+     * @return mixed
+     */
+    function getApplicationEntry($applicationID) {
+        global $DB;
+
+        return $DB->get_record('firmenzulassung_antraege', array('id'=>$applicationID), $fields='*', MUST_EXIST);
+    }
+
+    function deleteApplication($applicationID) {
+        global $DB;
+
+        $DB->delete_records('firmenzulassung_antraege', array('id'=>$applicationID));
+        $DB->delete_records('firmenzulassung_status', array('application_id'=>$applicationID));
+    }
+    
+    
+    /**
+     * by Simon Wohlfahrt
+     * @param $applicationID
+     * @return string
+     */
+    function getHistoryAsFormattedString($applicationID) {
+        global $DB;
+
+        $records = $DB->get_records('firmenzulassung_status', array('application_id'=>$applicationID));
+        //TODO: order by date
+
+        //echo 'Generierung des Zulassungsprozessverlaufs...';
+        //print_object($records);
+
+        $string = '';
+        foreach ($records As $entry) {
+
+            if ($entry->status == 0)
+                continue;
+
+            $string = $string . '<b> Der Antrag wurde am ' . userdate($entry->date) . ' ' . get_string('status' . $entry->status, 'mod_firmenzulassung') . ' ' . $DB->get_field('user', 'username', array ('id'=>$entry->user), $strictness=IGNORE_MISSING) . '</b>';
+
+            //TODO: format user name output, date and maybe some bold text for fancyness
+            if (strlen($entry->reason) > 0) {
+                $string = $string . '<b> mit folgender Begründung:</b><br />' . $entry->reason;
+            } else {
+                $string = $string . '<b> ohne Begründung.</b>';
+            }
+
+            $string = $string . '<br /><br />';
+        }
+
+        return nl2br($string);
     }
     
     // TODO: Legacy code, wird von Simon neu etwicklet
@@ -63,7 +124,7 @@ class DbConnectivity {
         // TODO: save changes in the backend.
         /** $newStatus comes in the following structure:
          *  [
-         *  -> AntragsID kommt noch hinzu -> entspricht ID aus firmenzulassung_antraege (erstes Feld)
+         *  -> AntragsID kommt noch hinzu -> entspricht ID aus antraege (erstes Feld)
          *      "genehmigt" =>  1, // 1 = approved, 0 = declined. -> status bei Genehmigung um 1 erhöhen
          *      "generell" => [
          *          "verantwortlicher" => 5468464, // ID of the Studiengangsleiter
@@ -154,31 +215,52 @@ class DbConnectivity {
         return $studiengangs["name"][array_search($studiengangs_id, $studiengangs["id"])];
     }
 
+
     /**
+     * by Simon Wohlfahrt
+     * @param $application stdClass()
+     */
+    function updateApplication($application) {
+        global $DB;
+
+        if (!$DB->record_exists('firmenzulassung_antraege', array('id'=>$application->id))) {
+            throw new Exception('The application with ID '.$application->id.' does not exist!');
+        }
+
+        $DB->update_record('firmenzulassung_antraege', $application, $bulk=false);
+    }
+
+    /**
+     * by Simon Wohlfahrt
      * @param $applicationID
      * @return int
      */
-    static function getCurrentStatus($applicationID) {
+    function getCurrentStatus($applicationID) {
         global $DB;
 
         // Select the latest history entry (status change) for a specific applicationID.
-        $sql= 'SELECT status FROM {firmenzulassung_status} WHERE id = ? AND date = (SELECT MAX(date) FROM {firmenzulassung_status} WHERE id = ?);';
+        $sql= 'SELECT status FROM {firmenzulassung_status} WHERE application_id = ? AND date = (SELECT MAX(date) FROM {firmenzulassung_status} WHERE application_id = ?);';
 
         try {
-            $status = $DB->get_record_sql($sql, array($applicationID, $applicationID));
+            $record = $DB->get_record_sql($sql, array($applicationID, $applicationID));
+
+            if ($record != null)
+                return $record->status;
 
             //TODO: add standard status entry if not exists
             // if application with id $applicationID exists
             // and no history entry is found
             // add default history entry with insertDefaultApplicationHistoryEntry($applicationID);
+            if ($DB->record_exists('firmenzulassung_antraege', array('id'=>$applicationID)))
+                self::insertDefaultApplicationHistoryEntry($applicationID);
+
+            return 0;
 
         } catch (Exception $e) {
-
+            echo 'MARKER: [ERROR] in function \'getCurrentStatus\' !!!';
             echo $e->getTraceAsString();
             return 0;
         }
-
-        return $status;
     }
 
     /**
@@ -187,14 +269,14 @@ class DbConnectivity {
      * @param $status int
      * @param $reason string
      */
-    static function insertApplicationHistoryEntry($applicationID, $status, $reason) {
-        global $User;
+    function insertApplicationHistoryEntry($applicationID, $status, $reason) {
+        global $USER;
         global $DB;
 
-        $currentDateTime = new DateTime(core_date::get_server_timezone_object());
+        $currentDateTime = new DateTime("now", core_date::get_server_timezone_object());
 
         $record = new stdClass();
-        $record->user = $User->id;
+        $record->user = $USER->id;
         $record->application_id = $applicationID;
         $record->status = $status;
         $record->reason = $reason;
@@ -205,7 +287,7 @@ class DbConnectivity {
             $DB->insert_record('firmenzulassung_status', $record, false);
         } catch (Exception $e) {
             echo $e->getTraceAsString();
-            throw e;
+            throw $e;
         }
     }
 
@@ -213,10 +295,10 @@ class DbConnectivity {
      * by Simon Wohlfahrt
      * @param $applicationID
      */
-    static function insertDefaultApplicationHistoryEntry($applicationID) {
+    function insertDefaultApplicationHistoryEntry($applicationID) {
         global $DB;
 
-        $currentDateTime = new DateTime(core_date::get_server_timezone_object());
+        $currentDateTime = new DateTime("now", core_date::get_server_timezone_object());
 
         $record = new stdClass();
         $record->user = 0;
@@ -230,7 +312,7 @@ class DbConnectivity {
             $DB->insert_record('firmenzulassung_status', $record, false);
         } catch (Exception $e) {
             echo $e->getTraceAsString();
-            throw e;
+            throw $e;
         }
     }
 }
