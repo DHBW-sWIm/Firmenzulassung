@@ -31,6 +31,7 @@ class Uebersicht extends moodleform {
          */
         
         if (isset($change_responsible) || isset($edit_mode)) {
+
             $mform->addElement('select', 'responsible', get_string('responsible', 'mod_firmenzulassung'),
                 $dbConnectivity->getResponsibles()['name'],
                 $dbConnectivity->getResponsibles()['user_id']);
@@ -169,9 +170,7 @@ class Uebersicht extends moodleform {
             $mform->addElement('static', 'zulassung', get_string('zulassungStudiengang', 'mod_firmenzulassung'), "nicht zutreffend");
             $mform->addElement('static', '', "", "");
         }
-        
-        
-        
+
         $mform->addElement('html', '</td></tr></table>');
         
         /**
@@ -181,30 +180,41 @@ class Uebersicht extends moodleform {
         $mform->closeHeaderBefore('zulassungsprozess');
         
         $currentStep = $dbConnectivity->getMetaData($anfrage_id)["general"]["currentStatus"];
-        
-        
-        // TODO: -1, ..., -3 wann es abgelehnt ist
+
         $part1 = '';
         $part2 = '';
-        for ($i = 0; $i <=3; $i++) {
-            if ($i < $currentStep) {
-                $part1 = $part1 . get_string('zulassung' . $i, 'mod_firmenzulassung') . " > ";
-            } elseif ($i == $currentStep) {
-                $part1 = $part1 . get_string('zulassung' . $i, 'mod_firmenzulassung');
-            } else {
-                $part2 = $part2 . " > " . get_string('zulassung' . $i, 'mod_firmenzulassung');
+        if ($currentStep < 0) {
+            $part1 = get_string('status' . $dbConnectivity->getMetaData($anfrage_id)["general"]["currentStatus"], 'mod_firmenzulassung');
+        } else {
+            for ($i = 0; $i <= 3; $i++) {
+                if ($i < $currentStep) {
+                    $part1 = $part1 . get_string('zulassung' . $i, 'mod_firmenzulassung') . " > ";
+                } elseif ($i == $currentStep) {
+                    $part1 = $part1 . get_string('zulassung' . $i, 'mod_firmenzulassung');
+                } else {
+                    $part2 = $part2 . " > " . get_string('zulassung' . $i, 'mod_firmenzulassung');
+                }
             }
         }
-        
+
         $mform->addElement('html', '<div><text style="color: rgb(250, 70, 50); font-weight:  bold;">' . $part1 .
             '</text><text style="color: rgb(180, 175, 175); font-weight:  bold;">' . $part2 . '</text></div>');
-        
-        $mform->addElement('checkbox', 'besichtigt',  get_string('besichtigt', 'mod_firmenzulassung'));
-        $mform->addElement('date_selector', 'datumUNehmenBes', get_string('datumUNBes', 'mod_firmenzulassung'));
-        $mform->disabledIf('datumUNehmenBes', 'besichtigt');
-        
+
+
+        if ($dbConnectivity->getMetaData($anfrage_id)['antragsbearbeitung']['is_visited'] > 0) {
+            $mform->addElement('static', 'besichtigt', get_string('besichtigung', 'mod_firmenzulassung'), get_string('besichtigt', 'mod_firmenzulassung'));
+            $mform->addElement('date_selector', 'datumUNehmenBes', get_string('datumUNBes', 'mod_firmenzulassung'), array(), array('disabled'));
+        } else {
+            $mform->addElement('checkbox', 'besichtigt',  get_string('besichtigt', 'mod_firmenzulassung'));
+            $mform->addElement('date_selector', 'datumUNehmenBes', get_string('datumUNBes', 'mod_firmenzulassung'));
+            $mform->disabledIf('datumUNehmenBes', 'besichtigt');
+        }
+
         $mainButons=array();
-        
+
+        $mform->addElement('static', 'history', get_string('history', 'mod_firmenzulassung'),
+            $dbConnectivity->getHistoryAsFormattedString($anfrage_id));
+
         if (isset($edit_mode)) {
             $mainButons[] =& $mform->createElement('submit', 'save_edit', get_string('speichern', 'mod_firmenzulassung'));
         } elseif (isset($change_responsible)) {
@@ -213,18 +223,20 @@ class Uebersicht extends moodleform {
             $mform->addElement('textarea', 'comment', get_string('kommentar', 'mod_firmenzulassung'), 'rows="10" cols="50"');
             
             $mainButons[] =& $mform->createElement('submit', 'genehmigen', get_string('genehmigen', 'mod_firmenzulassung'));
-            $mainButons[] =& $mform->createElement('submit', 'ablehen', get_string('ablehen', 'mod_firmenzulassung'));
+            $mainButons[] =& $mform->createElement('submit', 'ablehnen', get_string('ablehnen', 'mod_firmenzulassung'));
+
+            $mform->disabledIf('genehmigen', 'besichtigt');
         }
-        
+
         $mainButons[] =& $mform->createElement('html', '<div class="form-group fitem"><button onclick="window.print()" style="background: url(icons/printIcon.png); background-repeat: no-repeat; background-size: 100%; border: none; height: 33px; width: 33px;"/></div>');
         $mform->addGroup($mainButons, 'mainBtns', '', array(' '), false);
         
-        
-        
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
-        
-        
+
+        $mform->addElement('hidden', 'anfrageid');
+        $mform->setType('anfrageid', PARAM_INT);
+
         $mform->closeHeaderBefore('mainBtns');
         
         $mform->setExpanded('angabenZumAntragstellerAlsUnternehmen', true);
@@ -232,7 +244,6 @@ class Uebersicht extends moodleform {
         $mform->setExpanded('angabenZurAusbildung', true);
         $mform->setExpanded('antragsbearbeitung', true);
         $mform->setExpanded('zulassungsprozess', true);
-        
     }
     
     //Custom validation should be added here

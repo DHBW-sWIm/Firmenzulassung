@@ -43,11 +43,11 @@ echo nl2br("\n");
 echo nl2br("\n");
 
 $resID = $_GET['anfrageid']; //Wird von View-PHP mit dem Delete-Link übergeben
-$sql= 'SELECT name FROM {resources} WHERE id ='.$resID.';';
+$sql= 'SELECT surname, firstname FROM {firmenzulassung_antraege} WHERE id ='.$resID.';';
 $resource = $DB->get_record_sql($sql, array($resID));
-$resName = $resource->surname;
+$resName = $resource->firstname . ' ' . $resource->surname;
 
-echo $message = "Willst du den Antrag von ".$resName." und der ID ".$resID." löschen?";
+echo $message = "Willst du den Antrag von ".$resName." mit der ID ".$resID." löschen?";
 echo nl2br("\n");
 echo nl2br("\n");
 echo nl2br("\n");

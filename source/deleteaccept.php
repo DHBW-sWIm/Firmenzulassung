@@ -47,7 +47,9 @@ echo nl2br("\n");
 
 $resourcestable = 'antraege';
 // Datensatz mit übergebener ID löschen
-$DB->delete_records_select($resourcestable,"id ='".$resID."'", $params=null);
+$dbConnectivity = new DbConnectivity();
+
+$dbConnectivity->deleteApplication($resID);
 
 //Erfolgsmeldung
 $message = "Antrag von ".$resName." und der ID ".$resID." ist gelöscht.";

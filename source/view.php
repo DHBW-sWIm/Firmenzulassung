@@ -63,37 +63,40 @@ $event->trigger();
 // Um Tabelle >>antraege<< zu belegen
 
 $record = new stdClass();
-$record->firstname         = 'Ragnar';
-$record->surname = 'Lothbrok';
-$record->company = 'Shieldwall Defense';
-$record->phone        = '0800123456';
-$record->email = 'SonOfOdin@walhallamail.com';
-$record->fax=  '0800123450';
-$record->industry=  'Logistik';
-$record->city=  'Kathegatt';
-$record->zipcode=  '98912';
-$record->street=  'Freyastraße';
-$record->number=  '1';
-$record->count_employees=  '3030';
-$record->count_mercantile=  '1';
-$record->count_technical=  '0';
-$record->count_other=  '0';
-$record->chamber_name=  'Vikings';
-$record->chamber_city=  'Kathegatt';
-$record->reward=  '850';
-$record->imparting=  '0';
-$record->start=  '01.01.930';
-$record->major_present=  'ja';
-$record->responsible= rand(-1,9);
-$record->status=  rand(0,3);
-$record->visit=  '0';
-$record->visit_date=  'none';
-$record->app_date=  '07.07.2018';
+$record->firstname          = 'Ragnar';
+$record->surname            = 'Lothbrok';
+$record->company            = 'Shieldwall Defense';
+$record->phone              = '0800123456';
+$record->email              = 'SonOfOdin@walhallamail.com';
+$record->fax                = '0800123450';
+$record->industry           = 'Logistik';
+$record->city               = 'Kathegatt';
+$record->zipcode            = '98912';
+$record->street             = 'Freyastraße';
+$record->number             = '1';
+$record->count_employees    = '3030';
+$record->count_mercantile   = '1';
+$record->count_technical    = '0';
+$record->count_other        = '0';
+$record->chamber_name       = 'Vikings';
+$record->chamber_city       = 'Kathegatt';
+$record->reward             = '850';
+$record->imparting          = '0';
+$record->start              = '01.01.930';
+$record->major_present      = 'ja';
+$record->responsible        = null;
+$record->is_visited         = 0;
+$record->visit_date         = null;
+$record->app_date           = '07.07.2018';
+$record->firmenliste_aufnahme = 0;
+$record->firmenliste_aufnahme_date = null;
 
 
-$DB->insert_record('antraege', $record, $returnid=false, $bulk=false);
+$applicationID = $DB->insert_record('firmenzulassung_antraege', $record, $returnid=true, $bulk=false);
 
+//echo 'MARKER: [INFO] $applicationID = \''.$applicationID.'\'.';
 
+$dbanfrage->insertDefaultApplicationHistoryEntry($applicationID);
 
 
 /* PAGE belegen*/
@@ -120,30 +123,59 @@ $strName = "Antrags-Übersicht";
 echo $OUTPUT->heading($strName);
 
 $attributes = array();
+
+/*
+//TO-DO: remove in productivity
+$tableTest = new html_table();
+$tableTest->head = array('Entry ID','Application ID', 'Status','Date', 'User', 'Reason');
+
+$statusTableEntries = $DB->get_records('firmenzulassung_status');
+
+foreach ($statusTableEntries as $entry) {
+    //echo 'MARKER: [INFO] Entry '.$entry->id.' for Application ID '.$entry->application_id.' with Status '.$entry->status.' and reason \''.$entry->reason.'\'.       || ';
+
+    $id = $entry->id;
+    $app_id = $entry->application_id;
+    $date = $entry->date;
+    $status = $entry->status;
+    $user = $entry->user;
+    $reason = $entry->reason;
+
+    $tableTest->data[] = array($id, $app_id, $status, $date, $user, $reason);
+}
+echo html_writer::table($tableTest);
+*/
+
 // Alle Datensätze aus der DB-Tabelle >>antrag<< abfragen.
-$resource = $DB->get_records('antraege');
+$resource = $DB->get_records('firmenzulassung_antraege');
 
 $table = new html_table();
 $table->head = array('ID','Bewerbungsdatum', 'Status','Firma', 'Unternehmensvertreter', 'Verantwortlicher', 'Edit', 'Delete', 'Vertreter wählen');
 
 //Für jeden Datensatz
 foreach ($resource as $res) {
-$id = $res->id;
-$app_date = $res->app_date;
-$status = get_string('status' . $res->status, 'mod_firmenzulassung');
-$company = $res->company;
-$surname = $res->surname;
-$responsible = $dbanfrage->getUserIDToName($res->responsible);
+    $id = $res->id;
+    $app_date = $res->app_date;
+//$status = get_string('status' . $res->status, 'mod_firmenzulassung');
+
+    $currentStatus = $dbanfrage->getCurrentStatus($id);
+
+    //echo 'MARKER: [INFO] Application '.$res->id.' with $currentStatus = \''.$currentStatus.'\'.';
+
+    $status = get_string('status'.$currentStatus, 'mod_firmenzulassung');
+    $company = $res->company;
+    $surname = $res->surname;
+    $responsible = $dbanfrage->getUserIDToName($res->responsible);
 
 
-//Link zum Bearbeiten der aktuellen Ressource in foreach-Schleife setzen
-$htmlLink = html_writer::link(new moodle_url('../firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $res->id)), 'Edit', $attributes=null);
-//Analog: Link zum Löschen...
-$htmlLinkDelete = html_writer::link(new moodle_url('../firmenzulassung/delete.php', array('id' => $cm->id, 'anfrageid' => $res->id)), 'Delete', $attributes=null);
-//Analog: Link Vertreter Bearbeiten...
-$htmlLinkResponsible = html_writer::link(new moodle_url('../firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $res->id, 'changeResp' => 1)), 'Vertreter wählen', $attributes=null);
-//Daten zuweisen an HTML-Tabelle
-$table->data[] = array($id, $app_date, $status, $company, $surname, $responsible, $htmlLink, $htmlLinkDelete, $htmlLinkResponsible);
+    //Link zum Bearbeiten der aktuellen Ressource in foreach-Schleife setzen
+    $htmlLink = html_writer::link(new moodle_url('../firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $res->id)), 'Edit', $attributes = null);
+    //Analog: Link zum Löschen...
+    $htmlLinkDelete = html_writer::link(new moodle_url('../firmenzulassung/delete.php', array('id' => $cm->id, 'anfrageid' => $res->id)), 'Delete', $attributes = null);
+    //Analog: Link Vertreter Bearbeiten...
+    $htmlLinkResponsible = html_writer::link(new moodle_url('../firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $res->id, 'changeResp' => 1)), 'Vertreter wählen', $attributes = null);
+    //Daten zuweisen an HTML-Tabelle
+    $table->data[] = array($id, $app_date, $status, $company, $surname, $responsible, $htmlLink, $htmlLinkDelete, $htmlLinkResponsible);
 }
 //Tabelle ausgeben
 echo html_writer::table($table);
