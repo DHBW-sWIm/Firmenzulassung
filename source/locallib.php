@@ -597,7 +597,7 @@ function isResponsibleStudiengangsleiter($userID, $applicationID) {
 
     try {
 
-        echo 'MARKER: [INFO] $USER->id = '.$userID.'.';
+        //echo 'MARKER: [INFO] $USER->id = '.$userID.'.';
 
         $responsibleID = $DB->get_field('firmenzulassung_antraege', 'responsible', array('id'=>$applicationID), MUST_EXIST);
         return $responsibleID == $userID;

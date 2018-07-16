@@ -34,6 +34,7 @@ require_once(dirname(__FILE__).'/locallib.php');
 $id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // ... firmenzulassung instance ID - it should be named as the first character of the module.
 $anfrageid = optional_param('anfrageid', 0, PARAM_INT);
+$action = optional_param('action', 0, PARAM_TEXT);
 
 if ($id) {
     $cm         = get_coursemodule_from_id('firmenzulassung', $id, 0, false, MUST_EXIST);
@@ -59,7 +60,7 @@ $event->trigger();
 
 // Print the page header.
 
-$PAGE->set_url('/mod/firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $anfrageid));
+$PAGE->set_url('/mod/firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $anfrageid, 'action' => $action));
 $PAGE->set_title(format_string($firmenzulassung->name));
 $PAGE->set_heading(format_string($course->fullname));
 
@@ -96,6 +97,8 @@ $dbConnectivity = new DbConnectivity();
 //Form processing and displaying is done here
 if ($fromform = $mform->get_data()) {
 
+    //echo 'MARKER: [INFO] POINT 01 entered form processing...';
+
     if (!empty($fromform->genehmigen)) {
         $genehmigt = true;
     } elseif (!empty($fromform->ablehnen)) {
@@ -106,17 +109,20 @@ if ($fromform = $mform->get_data()) {
     //...
 
     //TODO: Testing
-    if ($genehmigt && !isset($fromform->besichtigt)) {
+    if (isset($genehmigt) && $genehmigt && !isset($fromform->besichtigt)) {
         //approval is only allowed if the Studiengangsleiter has visited the company
         //TODO: Error Message goes here 'Der Antrag kann erst nach einem Besuch beim Unternehmen genehmigt werden!'
-        error_log('Der Antrag kann erst nach einem Besuch beim Unternehmen genehmigt werden!');
+        echo 'Der Antrag kann erst nach einem Besuch beim Unternehmen genehmigt werden!';
 
-    } else {
+    } elseif (isset($genehmigt)) {
+
+        //echo 'MARKER: [INFO] POINT 02 entered process application routine...';
 
         try {
             // the magic trick to update the application status and check if user is allowed to perfom this action
             saveChanges($fromform, $anfrageid);
             processApplication($anfrageid, $genehmigt, $fromform->comment);
+
 
         } catch (Exception $e) {
             error_log($e->getTraceAsString());
@@ -127,55 +133,36 @@ if ($fromform = $mform->get_data()) {
             // The exception message should be visible for the user
         }
 
+    } elseif (isset($fromform->change_resp)) {
+        try {
+            saveRespChange($fromform, $anfrageid);
+        } catch (Exception $e) {
+            error_log($e->getTraceAsString());
+            echo $e->getMessage().' at line '.$e->getLine();
+            echo $e->getTraceAsString();
+        }
     }
-    //$PAGE->set_url('/mod/firmenzulassung/view.php', array('id' => $cm->id));
 
-    $PAGE->set_url('/mod/firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $anfrageid));
+    //echo 'MARKER: [INFO] POINT 03 header refreshing...';
+    redirect(new moodle_url('../firmenzulassung/uebersicht.php', array('id' => $id, 'anfrageid' => $anfrageid, 'action' => 'view')));
 
-    $formdata = array('id' => $id, 'anfrageid' => $anfrageid);
-    $mform->set_data($formdata);
-    //displays the form
-    $mform->display();
-
-
-    //$value1 = $fromform->email;
-    //$value2 = $fromform->name;
-
-    //echo $value1;
-    //error_log($value1);
-
-    //In this case you process validated data. $mform->get_data() returns data posted in form.
-    //Creating instance of relevant API modules
-    /* create_api_instances();
-     $process_definition_id = firmenzulassung_get_process_definition_id("testttest");
-     error_log("PROCESS DEFINITION ID IS: " . $process_definition_id);
-     $process_instance_id = firmenzulassung_start_process($process_definition_id, "test_key");
-     error_log("PROCESS INSTANCE ID IS: " . $process_instance_id);
-     sleep(2);
-     error_log("WAKEY WAKEY, BOYS AND GIRLS");
-     $taskid = firmenzulassung_check_for_input_required($process_instance_id);
-     error_log("TASK ID IS: " . $taskid);
-     if ($taskid != null) {
-       error_log("EXECUTION OF TASK RESPONSE");
-       $value1 = $fromform->email;
-       $value2 = $fromform->name;
-       $result = firmenzulassung_answer_input_required($taskid, $process_definition_id, $value1, $value2);
-       error_log("INPUT SEND RESULT IS: " . $result);
-     }*/
 } else {
+
+    //echo 'MARKER: [INFO] POINT 04 entered no routine in form processing...';
+
     // this branch is executed if the form is submitted but the data doesn't validate and the form should be redisplayed
     // or on the first display of the form.
 
     // Set default data (if any)
     // Required for module not to crash as a course id is always needed
-    $formdata = array('id' => $id, 'anfrageid' => $anfrageid);
+    $formdata = array('id' => $id, 'anfrageid' => $anfrageid, 'action' => $action);
     $mform->set_data($formdata);
     //displays the form
     $mform->display();
-}
 
-// Finish the page.
-echo $OUTPUT->footer();
+    // Finish the page.
+    echo $OUTPUT->footer();
+}
 
 
 /**
@@ -195,4 +182,9 @@ function saveChanges($fromform, $application_id) {
     }
 
     $dbConnectivity->updateApplication($application);
+}
+
+function saveRespChange($fromform, $application_id) {
+    $dbConnectivity = new DbConnectivity();
+    $dbConnectivity->updateResponsible($application_id, $fromform->responsible);
 }

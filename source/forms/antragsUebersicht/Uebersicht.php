@@ -4,41 +4,35 @@ require_once("$CFG->libdir/formslib.php");
 require_once(dirname(dirname(dirname(__FILE__))).'/backend/DbConnectivity.php');
 
 class Uebersicht extends moodleform {
+
     //Add elements to form
-    
     public function definition() {
 
         // We distinct between 2 different cases
         // 1. view
         // 2. select responsible
+        // 3. edit (somehow)
         // ?. maybe more in the future...
         // We destinct by checking the url parameter 'action'
-        // allowed action values are 'view', 'selectResponsible'
+        // allowed action values are 'view', 'selectResponsible', 'edit'
 
-        // Validate the url parameter. If insufficient => abort
-        if (!isset($_GET['anfrageid'])) {
-            //TODO: here goes some exception
-            return;
-        }
-        if (!isset($_GET['action'])) {
-            //TODO: here goes some exception
-            return;
-        }
+        //echo 'MARKER: [INFO] POINT 12 entered Uebersicht.php...';
 
         $dbConnectivity = new DbConnectivity();
 
         // all relevant variables stored here
-        $application_id = $_GET['anfrageid'];
-        $action         = $_GET['action'];
-        $application    = $dbConnectivity->getApplicationEntry($application_id);
+        $application_id     = self::doTheMagic('anfrageid');
+        $action             = self::doTheMagic('action');
+        $application        = $dbConnectivity->getApplicationEntry($application_id);
+        $applicationStatus  = $dbConnectivity->getCurrentStatus($application_id);
 
-        //TODO: remove later
-        print_object($application);
-        //
+        /* //For Testing:
+         * print_object($application);
+         */
 
         $mform = $this->_form;
 
-        self::displayForm($mform, $application, $action);
+        self::displayForm($mform, $application, $applicationStatus, $action);
 
     }
 
@@ -46,8 +40,18 @@ class Uebersicht extends moodleform {
      * @param $mform
      * @param $application_id
      */
-    function displayForm($mform, $application, $action) {
+    function displayForm($mform, $application, $applicationStatus, $action) {
         $dbConnectivity = new DbConnectivity();
+
+        // define hiiden fields to store relevant data
+        $mform->addElement('hidden', 'id');
+        $mform->setType('id', PARAM_INT);
+
+        $mform->addElement('hidden', 'anfrageid');
+        $mform->setType('anfrageid', PARAM_INT);
+
+        $mform->addElement('hidden', 'action');
+        $mform->setType('action', PARAM_TEXT);
 
         /**
          * 0. general information about the application
@@ -96,38 +100,47 @@ class Uebersicht extends moodleform {
         }
 
         $mform->addElement('date_selector', 'datumUNehmenBes', get_string('datumUNBes', 'mod_firmenzulassung'), array(), array('disabled'));
+        if (isset($application->visit_date)) {
+            $mform->setDefault('datumUNehmenBes', $application->visit_date);
+        }
         $mform->disabledIf('datumUNehmenBes', 'besichtigt');
 
         $mform->addElement('static', 'history', get_string('history', 'mod_firmenzulassung'),
             $dbConnectivity->getHistoryAsFormattedString($application->id));
 
-        $mform->addElement('textarea', 'comment', get_string('kommentar', 'mod_firmenzulassung'), 'rows="10" cols="50"');
-
         // create Action Buttons
         $mainButons=array();
+
+
 
         switch ($action) {
             case 'view':
                 $mainButons[] =& $mform->createElement('submit', 'genehmigen', get_string('genehmigen', 'mod_firmenzulassung'));
                 $mainButons[] =& $mform->createElement('submit', 'ablehnen', get_string('ablehnen', 'mod_firmenzulassung'));
 
-                $mform->disabledIf('genehmigen', 'besichtigt');
+                // if application is rejected than button 'genehmigen' and 'ablehnen' should be disabled
+
+                //print_object($application);
+
+                if ($applicationStatus < 0 || !isset($application->responsible)) {
+                    //echo 'MARKER: [INFO] POINT 345 diable all buttons';
+                    $mform->disabledIf('besichtigt', 'anfrageid', 'eq', $application->id);
+                    $mform->disabledIf('genehmigen', 'anfrageid', 'eq', $application->id);
+                    $mform->disabledIf('ablehnen', 'anfrageid', 'eq', $application->id);
+                } else {
+                    //echo 'MARKER: [INFO] POINT 346 dynamic disable enable';
+                    $mform->addElement('textarea', 'comment', get_string('kommentar', 'mod_firmenzulassung'), 'rows="10" cols="50"');
+                    $mform->disabledIf('genehmigen', 'besichtigt');
+                }
+
                 break;
             case 'selectResponsible':
                 $mainButons[] =& $mform->createElement('submit', 'change_resp', get_string('speichern', 'mod_firmenzulassung'));
-                $mainButons[] =& $mform->createElement('html', '<div class="form-group fitem"><button onclick="window.print()" style="background: url(icons/printIcon.png); background-repeat: no-repeat; background-size: 100%; border: none; height: 33px; width: 33px;"/></div>');
-
                 break;
         }
 
+        $mainButons[] =& $mform->createElement('html', '<div class="form-group fitem"><button onclick="window.print()" style="background: url(icons/printIcon.png); background-repeat: no-repeat; background-size: 100%; border: none; height: 33px; width: 33px;"/></div>');
         $mform->addGroup($mainButons, 'mainBtns', '', array(' '), false);
-
-        // define hiiden fields to store data
-        $mform->addElement('hidden', 'id');
-        $mform->setType('id', PARAM_INT);
-
-        $mform->addElement('hidden', 'anfrageid');
-        $mform->setType('anfrageid', PARAM_INT);
 
         // don't know what this does
         $mform->closeHeaderBefore('mainBtns');
@@ -143,6 +156,7 @@ class Uebersicht extends moodleform {
     /**
      * @param $mform
      * @param $application_id
+     * @return
      */
     function displayProgress($mform, $application_id) {
         $dbConnectivity = new DbConnectivity();
@@ -174,6 +188,7 @@ class Uebersicht extends moodleform {
      * @param $mform
      * @param $application_id
      * @param $action
+     * @return
      */
     function displaySectionZero($mform, $application_id, $action) {
         $dbConnectivity = new DbConnectivity();
@@ -209,6 +224,7 @@ class Uebersicht extends moodleform {
      * @param $mform
      * @param $application_id
      * @param $action
+     * @return
      */
     function displaySectionOne($mform, $application_id, $action) {
         $dbConnectivity = new DbConnectivity();
@@ -230,6 +246,7 @@ class Uebersicht extends moodleform {
      * @param $mform
      * @param $application_id
      * @param $action
+     * @return
      */
     function displaySectionTwo($mform, $application_id, $action) {
         $dbConnectivity = new DbConnectivity();
@@ -277,6 +294,7 @@ class Uebersicht extends moodleform {
      * @param $mform
      * @param $application_id
      * @param $action
+     * @return
      */
     function displaySectionThree($mform, $application_id, $action) {
         $dbConnectivity = new DbConnectivity();
@@ -310,6 +328,12 @@ class Uebersicht extends moodleform {
         return $mform;
     }
 
+    /**
+     * @param $mform
+     * @param $application_id
+     * @param $action
+     * @return mixed
+     */
     function displaySectionFour($mform, $application_id, $action) {
         $dbConnectivity = new DbConnectivity();
 
@@ -365,4 +389,18 @@ class Uebersicht extends moodleform {
     function validation($data, $files) {
         return array();
     }
+
+    function doTheMagic($parameter) {
+        // Validate the url parameter. If insufficient => abort
+        if (isset($_GET[$parameter]) && !empty($_GET[$parameter])) {
+            return $_GET[$parameter];
+        } else if (isset($_POST[$parameter]) && !empty($_POST[$parameter])) {
+            return $_POST[$parameter];
+        }
+
+        //TODO: here goes some exception
+        //echo 'MARKER: [INFO] POINT 10 no anfrageid defined exception...';
+        throw new Exception('Parameter \'' . $parameter . '\' not defined!');
+    }
+
 }

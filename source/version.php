@@ -28,8 +28,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_firmenzulassung'; 
-$plugin->version = 2018071646;
-$plugin->release = '2018071646';
+$plugin->version = 2018071647;
+$plugin->release = '2018071647';
 $plugin->requires = 2014051200;
 $plugin->maturity = MATURITY_ALPHA;
 $plugin->cron = 0;
