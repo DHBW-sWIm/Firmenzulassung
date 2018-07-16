@@ -136,29 +136,3 @@ $string['speichern'] = 'Speichern';
 
 $string['maincategory'] ='maincategory';
 
-/**
- * E-Mail Notification Übergabe an die Bedarfsmeldung --- DO NOT CHANGE FORMATTING
- */
-
-$string['notifyemailnewdualpartner_partner'] = 'Sehr geehrte Damen und Herren von {$a},
-
-Zur Zeit ist keine Bedarfsmeldungsabgabe möglich, allerdings werden Sie zur nächsten Runde automatisch eingeladen und über den Ablauf frühzeitig informiert.
-
-Mit freundlichen Grüßen 
-Sekretariat der Wirtschaftsinformatik (DHBW Mannheim) 
-
-
-*** Diese Nachricht wurde automatisch verschickt - bitte Antworten Sie nicht auf diese E-Mail. Bei Fragen wenden Sie sich bitte an das Sekretariat der Wirtschaftsinformatik (DHBW Mannheim). ***';
-
-$string['notifyemailnewdualpartner_studiengangsleiter'] = 'Guten Tag {$a->responsibleUser},
-
-Der Duale Partner {$a->enrolledUser} wurde zum aktuellen Bedarfsmeldeprozess hinzugefügt. Bitte informieren Sie den Dualen Partner {$a->enrolledUser} über den Ablauf des Bedarfsmeldeprozesses.
-
-Mit freundlichen Grüßen 
-DHBW Moodle 
-
-
-*** Diese Nachricht wurde automatisch verschickt - bitte Antworten Sie nicht auf diese E-Mail. Bei Fragen wenden Sie sich bitte an das Sekretariat der Wirtschaftsinformatik (DHBW Mannheim). ***';
-/**
- * End of E-Mail Notification Übergabe an die Bedarfsmeldung --- DO NOT CHANGE FORMATTING
- */

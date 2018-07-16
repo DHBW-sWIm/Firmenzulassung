@@ -22,6 +22,7 @@
  */
 namespace mod_firmenzulassung;
 defined('MOODLE_INTERNAL') || die();
+require_once($CFG->dirroot . '/mod/assign/locallib.php');
 /**
  * Group observers class.
  *
@@ -31,14 +32,6 @@ defined('MOODLE_INTERNAL') || die();
  */
 class group_observers {
     /**
-     * Constant for the shortname of the course for Dual Partners (ARBEITSKREIS WI).
-     *
-     * @var string The course shortname.
-     */
-    private static $dualpartnercourse = "arbeitskreiswi";
-
-
-    /**
      * An account was enrolled in dual partner course.
      *
      * @param \core\event\base $event The event.
@@ -47,50 +40,61 @@ class group_observers {
 
 
     /**this function is triggered by the event USER_ENROLMENT_CREATED
-    * and sends out an email regarding the process of estimating the no. of students
+    * and sends out a message regarding the process of estimating the no. of students
     * to the dual partner who has just beeen enrolled 
     * or the user who enrolled the new member to the Arbeitskreis WI course
     * depending on whether the process is currently running or not
     */
-    public static function dual_partner_added(\core\event\user_enrolment_created $event) {
-        global $DB;        
-        $emailText = '';
+    public static function dual_partner_added($event) {
+        global $DB;
         $start = 11; // The Bedarfsmeldung Process starts in November
-        $end = 3; // The Badarfsmeldung Process ends in March
-        $supportUser = $DB->get_record('user', array('username' => 'supportuser'));
-        $enrolledUser = $DB->get_record('user', array('id' => $event->relateduserid));
-        $responsibleUser = $DB->get_record('user', array('id' => $event->userId));  
-        $course = $DB->get_record('course', array('id' => $event->courseid)); 
+        $end = 3; // The Badarfsmeldung Process ends in March (?)
 
-        if($course->shortname != self::$dualpartnercourse) return; // the function should only be executed for the enrollment to the ARBEITSKREIS WI course           
+
         
-        $sendTo = $supportUser; //default
-        // check whether Bedarfsmeldeprozess is currently underway
+        $course = $DB->get_record('course', array('id' => $event->courseid)); 
+        if($course->shortname != "arbeitskreiswi") return; // the function should only be executed for the enrollment to the ARBEITSKREIS WI course
+        
+        $supportUser = $DB->get_record('user', array('username' => 'supportuser')); //the message is sent from a bot user "Support User"
+
+
+        //message creation
+        $message = new \core\message\message();
+        $message->component = 'moodle';
+        $message->name = 'instantmessage';
+        $message->userfrom = $supportUser;   
+        // $message->userto = $event->relateduserid; //Dual Partner 
+        $message->subject = 'Bedarfsmeldeprozess';
+        $message->fullmessageformat = FORMAT_MARKDOWN;
+        $message->fullmessagehtml = '<p>message body</p>';
+        $message->notification = '0';
+        $message->contexturl = '';
+        $message->contexturlname = 'Context name';
+        $message->replyto = "";
+        $content = array('*' => array('header' => ' test ', 'footer' => ' test ')); // Extra content for specific processor
+        $message->set_additional_content('email', $content);
+        $message->courseid = $course->id; // This is required in recent versions, use it from 3.2 on https://tracker.moodle.org/browse/MDL-47162
+
+
+
+
         if(date("n") < $start && date("n") > $end ){
-            /**
-             * Bedarfsmeldeprozess NOT underway
-             * if there is currently no Bedarfsmeldung process running (April-October), the message should be sent to the newly enrolled user, 
-             * letting them know that they will be added to the next process and will be informed about it
-             */
-            $sendTo = $enrolledUser; //Newly enrolled user -> Dual Partner 
-            $emailText = get_string('notifyemailnewdualpartner_partner', 'firmenzulassung', format_string(fullname($enrolledUser))); //content of email
+            //outside the process
+            // if there is currently no Bedarfsmeldung process running (April-October), 
+            // the message should be sent to the newly enrolled user, 
+            // letting them know that they will be added to the next process
+            $message->userto = $event->relateduserid; //Newly enrolled user -> Dual Partner 
+            $message->fullmessage = 'No Bedarfsmeldung Process is running at the moment, but you will be added to the next one.';
+            $message->smallmessage = 'No Bedarfsmeldung Process is running at the moment, but you will be added to the next one.';
         }else{
-            /**
-             *   Bedarfsmeldeprozess underway
-             *   if there is a Bedarfsmeldung process running (November-March), an E-mail should be sent to the Studiengangsleiter, 
-             *   letting them know that they should inform the newly enrolled dual partner how the process works
-             */
-            $sendTo = $responsibleUser; //The user who has enrolled the user -> Studiengangsleiter
-            $data = array();
-            $data['responsibleUser'] = fullname($responsibleUser);
-            $data['enrolledUser'] = fullname($enrolledUser);
-            $emailText = get_string('notifyemailnewdualpartner_studiengangsleiter', 'firmenzulassung', $data); //content of email
-        }       
-        
-        //send email
-        $supportuser->mailformat = 1; // Always send HTML version as well.
-        $subject = 'Arbeitskreis WI: Bedarfsmeldeprozess';    
-        $messagehtml = text_to_html($emailText, false, false, true);
-        return email_to_user($sendTo, $supportUser, $subject, $emailText, $messagehtml);
+            //inside the process
+            // if there is a Bedarfsmeldung process running (November-March), 
+            // the message should be sent to the Studiengangsleiter, 
+            // letting them know that they should inform the newly enrolled dual partner how the process works
+            $message->userto = $event->userid; //The user who has enrolled the user -> Studiengangsleiter
+            $message->fullmessage = 'The Bedarfsmeldung Process is currently running. Please inform the new Dual Partner about the process.';
+            $message->smallmessage = 'The Bedarfsmeldung Process is currently running. Please inform the new Dual Partner about the process.';
+        }               
+        $messageid = message_send($message);
     }
 }
