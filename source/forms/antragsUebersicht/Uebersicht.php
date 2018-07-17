@@ -26,6 +26,8 @@ class Uebersicht extends moodleform {
         $application        = $dbConnectivity->getApplicationEntry($application_id);
         $applicationStatus  = $dbConnectivity->getCurrentStatus($application_id);
 
+
+
         /* //For Testing:
          * print_object($application);
          */

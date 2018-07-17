@@ -329,9 +329,12 @@ function generate_dummy_user($email, $name = '', $id = -99) {
  * @throws Exception
  */
 function processApplication($applicationID, $isApproved, $reason) {
+    global $USER;
 
     $dbConnectivity = new DbConnectivity();
     $applicationStatus = $dbConnectivity->getCurrentStatus($applicationID);
+
+    print_object($USER);
 
     if ( $applicationStatus == null ) {
         throw new Exception('The application ID '.$applicationID.' does not exist!');
@@ -620,7 +623,7 @@ function getResponsibleStudiengangsleiter($applicationID) {
  */
 function isAuthorizedDekan($userID) {
     //TODO: Database selection with real dekan data
-    $dekans = array(0000000001, 0000000002, 0000000003);
+    $dekans = array(0000000005);
     return in_array ( $userID , $dekans );
 }
 
@@ -646,7 +649,7 @@ function getAuthorizedDekan($applicationID) {
  */
 function isAuthorizedHochschulrat($userID) {
     //TODO: Database selection with real responsibles data
-    $hochschulrat = array(0000000001, 0000000002, 0000000003);
+    $hochschulrat = array(8);
     return in_array ( $userID , $hochschulrat );
 }
 

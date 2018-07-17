@@ -120,9 +120,8 @@ if ($fromform = $mform->get_data()) {
 
         try {
             // the magic trick to update the application status and check if user is allowed to perfom this action
-            saveChanges($fromform, $anfrageid);
             processApplication($anfrageid, $genehmigt, $fromform->comment);
-
+            saveChanges($fromform, $anfrageid);
 
         } catch (Exception $e) {
             error_log($e->getTraceAsString());
