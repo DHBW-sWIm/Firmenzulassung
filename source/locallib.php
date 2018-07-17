@@ -334,7 +334,7 @@ function processApplication($applicationID, $isApproved, $reason) {
     $dbConnectivity = new DbConnectivity();
     $applicationStatus = $dbConnectivity->getCurrentStatus($applicationID);
 
-    print_object($USER);
+    //print_object($USER);
 
     if ( $applicationStatus == null ) {
         throw new Exception('The application ID '.$applicationID.' does not exist!');
