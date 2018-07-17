@@ -52,13 +52,13 @@ $string['status'] = 'Status';
 $string['antragsdatum'] = 'Antragsdatum';
 $string['studiengang'] = 'Studiengang';
 
-$string['status-3'] = 'abgelehnt durch Studiengangsleiter';
+$string['status-3'] = 'abgelehnt durch Hochschulrat';
 $string['status-2'] = 'abgelehnt durch Dekan';
 $string['status-1'] = 'abgelehnt durch Studiengangsleiter';
 $string['status0'] = 'neu';
 $string['status1'] = 'genehmigt durch Studiengangsleiter';
 $string['status2'] = 'genehmigt durch Dekan';
-$string['status3'] = 'genehmigt durch Rektorat';
+$string['status3'] = 'genehmigt durch Hochschulrat';
 
 /**
  * Form 1. Angaben zum Angesteller als Unternehmen
@@ -123,7 +123,7 @@ $string['subtitleFinal'] = 'Zulassungsprozess';
 $string['abgelehntDurch'] = 'abgelehnt durch';
 $string['zulassung0'] = 'Studiengangsleiter';
 $string['zulassung1'] = 'Dekan';
-$string['zulassung2'] = 'Rektorat';
+$string['zulassung2'] = 'Hochschulrat';
 $string['zulassung3'] = 'Abschluss';
 
 $string['besichtigung'] = 'Besichtigung';

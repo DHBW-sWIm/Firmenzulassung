@@ -109,7 +109,7 @@ if ($fromform = $mform->get_data()) {
     //...
 
     //TODO: Testing
-    if (isset($genehmigt) && $genehmigt && !isset($fromform->besichtigt)) {
+    if (isset($genehmigt) && $genehmigt && (!$dbConnectivity->getApplicationEntry($anfrageid)->is_visited && !isset($fromform->besichtigt))) {
         //approval is only allowed if the Studiengangsleiter has visited the company
         //TODO: Error Message goes here 'Der Antrag kann erst nach einem Besuch beim Unternehmen genehmigt werden!'
         echo 'Der Antrag kann erst nach einem Besuch beim Unternehmen genehmigt werden!';

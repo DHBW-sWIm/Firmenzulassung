@@ -382,9 +382,9 @@ function processApplicationByStudiengangsleiter($applicationID, $isApproved, $re
     $currentUserID = &$USER->id;
 
     // throw exception if user is not responsible
-    if (!isResponsibleStudiengangsleiter($currentUserID, $applicationID)) {
-        throw new Exception("You are not allowed to perform this task!");
-    }
+    //if (!isResponsibleStudiengangsleiter($currentUserID, $applicationID)) {
+    //    throw new Exception("You are not allowed to perform this task!");
+    //}
 
     // continue as Dekan to avoid performing same action twice for the user
     if (isAuthorizedDekan($currentUserID)) {
@@ -495,7 +495,7 @@ function processApplicationByHochschulrat($applicationID, $isApproved, $reason) 
     $dbConnectivity = new DbConnectivity();
     $currentUserID = &$USER->id;
 
-    if (!isAuthorizedDekan($currentUserID)) {
+    if (!isAuthorizedHochschulrat($currentUserID)) {
         throw new Exception("You are not allowed to perform this task!");
     }
 
@@ -560,7 +560,6 @@ function sendEmailToResponsibleStudiengangsleiter($applicationID, $status) {
     }
 
     return email_to_user($responsibleStudiengangsleiter, $USER, $subject, $message, $messageHTML, ",", false);
-
 }
 
 /**
@@ -639,7 +638,7 @@ function getAuthorizedDekan($applicationID) {
     // use this user to get its supervisor or supervising group (the Dekan)
 
     //This is not the valid E-Mail Adress!!!
-    return 'dekan01@trash-mail.com';
+    return 'dekan2@trash-mail.com';
 }
 
 /**
