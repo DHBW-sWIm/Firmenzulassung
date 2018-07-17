@@ -117,67 +117,6 @@ class DbConnectivity {
         return nl2br($string);
     }
     
-    // TODO: Legacy code, wird von Simon neu etwicklet
-    function changeStatus($newStatus) {
-        global $DB;
-        
-        // TODO: save changes in the backend.
-        /** $newStatus comes in the following structure:
-         *  [
-         *  -> AntragsID kommt noch hinzu -> entspricht ID aus antraege (erstes Feld)
-         *      "genehmigt" =>  1, // 1 = approved, 0 = declined. -> status bei Genehmigung um 1 erhöhen
-         *      "generell" => [
-         *          "verantwortlicher" => 5468464, // ID of the Studiengangsleiter
-         *          "studiengang" => 54 // ID of the Studiengang
-         *      ],
-         *      "antragsbearbeitung" => [
-         *          "aufnahme" => [
-         *              "aufnahme" => 1,
-         *              "datum" => "29.09.2018"
-         *          ],
-         *          "zulassung" => 0,
-         *      ],
-         *      "zulassungprozess" => [
-         *          "besichtigung" => "20.09.2017" (or null if it hasn't happened)
-         *      ]
-         *  ]
-         *  $jsonData = file_get_contents('cr0co.json');
-         *  $array = json_decode($jsonData);
-         *  $DB->update_record($table, $dataobject, $bulk=false)
-         *  
-         **/ 
-        
-//         Methode:
-//         $arr = get_class_methods(get_class($obj));
-//         foreach ($arr as $method) {
-//             echo "\tfunction $method()\n";
-//         }
-//         global $$obj;
-//         if (is_subclass_of($$obj, $class)) {
-//             echo "Objekt $obj gehört zur Klasse ".get_class($GLOBALS[$obj]);
-//             echo ", einer Subklasse von $class\n";
-//         } else {
-//             echo "Object $obj gehört nicht zu einer Subklasse von $class\n";
-//         }
-
-//         ODER:
-//         $jsonarray = json_decode($response, true);
-        
-//         echo $jsonarray->results->operation->selector;  
-        
-        
-        
-//         genehmigt++;
-        
-//         foreach($newstatus as $item) {
-//             switch ($item) {
-//                 case 'verantwortlicher':
-//                     $DB->update_record($table '...allumfassende table', ('verantwortlicher'=>$item), $bulk=false);
-//             }            
-//         }
-        
-    }
-    
     function getStudiengangs() {     
         return [
             "id" => [-1, 1],
@@ -257,7 +196,7 @@ class DbConnectivity {
             return 0;
 
         } catch (Exception $e) {
-            echo 'MARKER: [ERROR] in function \'getCurrentStatus\' !!!';
+            //echo 'MARKER: [ERROR] in function \'getCurrentStatus\' !!!';
             echo $e->getTraceAsString();
             return 0;
         }
@@ -313,6 +252,21 @@ class DbConnectivity {
         } catch (Exception $e) {
             echo $e->getTraceAsString();
             throw $e;
+        }
+    }
+
+    function updateResponsible($applicationID, $responsibleID) {
+        global $DB;
+
+        try {
+            $DB->update_record('firmenzulassung_antraege', [
+                "id" => $applicationID,
+                "responsible" => $responsibleID
+            ], $bulk=false);
+        } catch (Exception $e) {
+            //echo 'MARKER: [ERROR] in function \'updateResponsible\' !!!';
+            echo $e->getTraceAsString();
+            return 0;
         }
     }
 }

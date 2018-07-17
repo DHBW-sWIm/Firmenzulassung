@@ -150,7 +150,7 @@ echo html_writer::table($tableTest);
 $resource = $DB->get_records('firmenzulassung_antraege');
 
 $table = new html_table();
-$table->head = array('ID','Bewerbungsdatum', 'Status','Firma', 'Unternehmensvertreter', 'Verantwortlicher', 'Edit', 'Delete', 'Vertreter wählen');
+$table->head = array('ID','Bewerbungsdatum', 'Status','Firma', 'Unternehmensvertreter', 'Verantwortlicher', 'öffnen', 'löschen');
 
 //Für jeden Datensatz
 foreach ($resource as $res) {
@@ -169,13 +169,13 @@ foreach ($resource as $res) {
 
 
     //Link zum Bearbeiten der aktuellen Ressource in foreach-Schleife setzen
-    $htmlLink = html_writer::link(new moodle_url('../firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $res->id)), 'Edit', $attributes = null);
+    $htmlLink = html_writer::link(new moodle_url('../firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $res->id, 'action' => 'view')), 'öffnen', $attributes = null);
     //Analog: Link zum Löschen...
-    $htmlLinkDelete = html_writer::link(new moodle_url('../firmenzulassung/delete.php', array('id' => $cm->id, 'anfrageid' => $res->id)), 'Delete', $attributes = null);
+    $htmlLinkDelete = html_writer::link(new moodle_url('../firmenzulassung/delete.php', array('id' => $cm->id, 'anfrageid' => $res->id)), 'löschen', $attributes = null);
     //Analog: Link Vertreter Bearbeiten...
-    $htmlLinkResponsible = html_writer::link(new moodle_url('../firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $res->id, 'changeResp' => 1)), 'Vertreter wählen', $attributes = null);
+    $htmlLinkResponsible = html_writer::link(new moodle_url('../firmenzulassung/uebersicht.php', array('id' => $cm->id, 'anfrageid' => $res->id, 'action' => 'selectResponsible')), $responsible, $attributes = null);
     //Daten zuweisen an HTML-Tabelle
-    $table->data[] = array($id, $app_date, $status, $company, $surname, $responsible, $htmlLink, $htmlLinkDelete, $htmlLinkResponsible);
+    $table->data[] = array($id, $app_date, $status, $company, $surname, $htmlLinkResponsible, $htmlLink, $htmlLinkDelete);
 }
 //Tabelle ausgeben
 echo html_writer::table($table);

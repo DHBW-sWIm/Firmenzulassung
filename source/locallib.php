@@ -329,9 +329,12 @@ function generate_dummy_user($email, $name = '', $id = -99) {
  * @throws Exception
  */
 function processApplication($applicationID, $isApproved, $reason) {
+    global $USER;
 
     $dbConnectivity = new DbConnectivity();
     $applicationStatus = $dbConnectivity->getCurrentStatus($applicationID);
+
+    //print_object($USER);
 
     if ( $applicationStatus == null ) {
         throw new Exception('The application ID '.$applicationID.' does not exist!');
@@ -379,9 +382,9 @@ function processApplicationByStudiengangsleiter($applicationID, $isApproved, $re
     $currentUserID = &$USER->id;
 
     // throw exception if user is not responsible
-    if (!isResponsibleStudiengangsleiter($currentUserID, $applicationID)) {
-        throw new Exception("You are not allowed to perform this task!");
-    }
+    //if (!isResponsibleStudiengangsleiter($currentUserID, $applicationID)) {
+    //    throw new Exception("You are not allowed to perform this task!");
+    //}
 
     // continue as Dekan to avoid performing same action twice for the user
     if (isAuthorizedDekan($currentUserID)) {
@@ -492,7 +495,7 @@ function processApplicationByHochschulrat($applicationID, $isApproved, $reason) 
     $dbConnectivity = new DbConnectivity();
     $currentUserID = &$USER->id;
 
-    if (!isAuthorizedDekan($currentUserID)) {
+    if (!isAuthorizedHochschulrat($currentUserID)) {
         throw new Exception("You are not allowed to perform this task!");
     }
 
@@ -557,7 +560,6 @@ function sendEmailToResponsibleStudiengangsleiter($applicationID, $status) {
     }
 
     return email_to_user($responsibleStudiengangsleiter, $USER, $subject, $message, $messageHTML, ",", false);
-
 }
 
 /**
@@ -590,15 +592,8 @@ function emailRejectionToCompanyRepresentive($applicationID, $reason) {
 function isResponsibleStudiengangsleiter($userID, $applicationID) {
     global $DB;
 
-    //TODO: globalize admin user or use different check for testing purpose!
-    $adminUserID = 2;
-    if ($userID == $adminUserID)
-        return true;
-
     try {
-
-        echo 'MARKER: [INFO] $USER->id = '.$userID.'.';
-
+        //echo 'MARKER: [INFO] $USER->id = '.$userID.'.';
         $responsibleID = $DB->get_field('firmenzulassung_antraege', 'responsible', array('id'=>$applicationID), MUST_EXIST);
         return $responsibleID == $userID;
     } catch (Exception $e) {
@@ -627,7 +622,7 @@ function getResponsibleStudiengangsleiter($applicationID) {
  */
 function isAuthorizedDekan($userID) {
     //TODO: Database selection with real dekan data
-    $dekans = array(0000000001, 0000000002, 0000000003);
+    $dekans = array(0000000005);
     return in_array ( $userID , $dekans );
 }
 
@@ -643,7 +638,7 @@ function getAuthorizedDekan($applicationID) {
     // use this user to get its supervisor or supervising group (the Dekan)
 
     //This is not the valid E-Mail Adress!!!
-    return 'dekan01@trash-mail.com';
+    return 'dekan2@trash-mail.com';
 }
 
 /**
@@ -653,7 +648,7 @@ function getAuthorizedDekan($applicationID) {
  */
 function isAuthorizedHochschulrat($userID) {
     //TODO: Database selection with real responsibles data
-    $hochschulrat = array(0000000001, 0000000002, 0000000003);
+    $hochschulrat = array(8);
     return in_array ( $userID , $hochschulrat );
 }
 
