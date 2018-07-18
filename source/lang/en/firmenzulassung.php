@@ -140,7 +140,7 @@ $string['speichern'] = 'Speichern';
 
 $string['maincategory'] ='maincategory';
 
-
+$string['history'] ='Verlauf';
 
 
 
